@@ -1,2 +1,7 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+*.asset binary
+*.unity binary
+*.prefab binary
+*.meta binary
+*/CommunicatorObjects/* binary
+*/communicator_objects/* binary
+*.md text
