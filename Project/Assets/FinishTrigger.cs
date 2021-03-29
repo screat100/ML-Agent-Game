@@ -11,7 +11,7 @@ public class FinishTrigger : MonoBehaviour
     {
         if(other.tag == "agent")
         {
-            m_areaSetting.Scored();
+            m_areaSetting.Scored(other.gameObject);
         }
     }
 }

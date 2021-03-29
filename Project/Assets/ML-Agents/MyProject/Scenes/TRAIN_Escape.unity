@@ -782,18 +782,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 48.015, y: 0, z: 0}
---- !u!114 &1121124623 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1741158466843598402, guid: 19ff2308bc20627429c0e9ddf47bd733,
-    type: 3}
-  m_PrefabInstance: {fileID: 1741158468141522991}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 54036d52a5bfb7f4fbfcef9cca632d33, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &1170750184
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -963,11 +951,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1741158466843598402, guid: 19ff2308bc20627429c0e9ddf47bd733,
-        type: 3}
-      propertyPath: agentRunSpeed
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 1741158466843598403, guid: 19ff2308bc20627429c0e9ddf47bd733,
         type: 3}
       propertyPath: m_RootOrder
@@ -1028,16 +1011,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: TrainingArea (1)
       objectReference: {fileID: 0}
-    - target: {fileID: 7700761550693675754, guid: 19ff2308bc20627429c0e9ddf47bd733,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.81649655
-      objectReference: {fileID: 0}
-    - target: {fileID: 7700761550693675754, guid: 19ff2308bc20627429c0e9ddf47bd733,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0.57735026
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 19ff2308bc20627429c0e9ddf47bd733, type: 3}
 --- !u!1001 &1741158468141522991
@@ -1047,16 +1020,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 113709509437666437, guid: 19ff2308bc20627429c0e9ddf47bd733,
-        type: 3}
-      propertyPath: m_TagString
-      value: agent
-      objectReference: {fileID: 0}
-    - target: {fileID: 1741158466843598402, guid: 19ff2308bc20627429c0e9ddf47bd733,
-        type: 3}
-      propertyPath: agentRunSpeed
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 1741158466843598403, guid: 19ff2308bc20627429c0e9ddf47bd733,
         type: 3}
       propertyPath: m_RootOrder
@@ -1116,81 +1079,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: TrainingArea
-      objectReference: {fileID: 0}
-    - target: {fileID: 2352255468377089336, guid: 19ff2308bc20627429c0e9ddf47bd733,
-        type: 3}
-      propertyPath: m_areaSetting
-      value: 
-      objectReference: {fileID: 1121124623}
-    - target: {fileID: 3218286028353063462, guid: 19ff2308bc20627429c0e9ddf47bd733,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -10
-      objectReference: {fileID: 0}
-    - target: {fileID: 3218286028353063462, guid: 19ff2308bc20627429c0e9ddf47bd733,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3218286028353063462, guid: 19ff2308bc20627429c0e9ddf47bd733,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 7.806717
-      objectReference: {fileID: 0}
-    - target: {fileID: 5466090171312786383, guid: 19ff2308bc20627429c0e9ddf47bd733,
-        type: 3}
-      propertyPath: m_DetectableTags.Array.data[0]
-      value: wall
-      objectReference: {fileID: 0}
-    - target: {fileID: 5466090171312786383, guid: 19ff2308bc20627429c0e9ddf47bd733,
-        type: 3}
-      propertyPath: m_DetectableTags.Array.data[1]
-      value: agent
-      objectReference: {fileID: 0}
-    - target: {fileID: 5466090171312786383, guid: 19ff2308bc20627429c0e9ddf47bd733,
-        type: 3}
-      propertyPath: m_DetectableTags.Array.data[2]
-      value: dragon
-      objectReference: {fileID: 0}
-    - target: {fileID: 5466090171312786383, guid: 19ff2308bc20627429c0e9ddf47bd733,
-        type: 3}
-      propertyPath: m_DetectableTags.Array.data[3]
-      value: key
-      objectReference: {fileID: 0}
-    - target: {fileID: 5466090171312786383, guid: 19ff2308bc20627429c0e9ddf47bd733,
-        type: 3}
-      propertyPath: m_DetectableTags.Array.data[4]
-      value: lock
-      objectReference: {fileID: 0}
-    - target: {fileID: 5466090171312786383, guid: 19ff2308bc20627429c0e9ddf47bd733,
-        type: 3}
-      propertyPath: m_DetectableTags.Array.data[5]
-      value: portal
-      objectReference: {fileID: 0}
-    - target: {fileID: 7342161033122977744, guid: 19ff2308bc20627429c0e9ddf47bd733,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 1.15
-      objectReference: {fileID: 0}
-    - target: {fileID: 7342161033122977744, guid: 19ff2308bc20627429c0e9ddf47bd733,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -7.15
-      objectReference: {fileID: 0}
-    - target: {fileID: 8185826700538409995, guid: 19ff2308bc20627429c0e9ddf47bd733,
-        type: 3}
-      propertyPath: m_BehaviorType
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8185826700538410032, guid: 19ff2308bc20627429c0e9ddf47bd733,
-        type: 3}
-      propertyPath: m_TagString
-      value: agent
-      objectReference: {fileID: 0}
-    - target: {fileID: 9069477476462380011, guid: 19ff2308bc20627429c0e9ddf47bd733,
-        type: 3}
-      propertyPath: m_TagString
-      value: agent
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 19ff2308bc20627429c0e9ddf47bd733, type: 3}
