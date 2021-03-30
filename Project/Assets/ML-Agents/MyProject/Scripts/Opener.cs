@@ -9,8 +9,6 @@ public class Opener : MonoBehaviour
 
     public bool isOpen;
 
-    int Remain_Member;
-    
     private void Awake()
     {
         isOpen = false;
@@ -19,28 +17,12 @@ public class Opener : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.tag == "agent")
+        if(other.tag == "agent" && !isOpen)
         {
-            Remain_Member++;
-            if(Remain_Member>=2&&!isOpen)
-            {
-                m_areaSetting.DoorOpen();
-                isOpen = true;
-            }
+            m_areaSetting.DoorOpen();
+            isOpen = true;
         }
 
-    }
-    private void OnTriggerExit(Collider other)
-    {
-        if(other.tag == "agent")
-        {
-            Remain_Member--;
-            if(Remain_Member<2 && isOpen)
-            {
-                m_areaSetting.DoorClose();
-                isOpen = false;
-            }
-        }
     }
 
 }

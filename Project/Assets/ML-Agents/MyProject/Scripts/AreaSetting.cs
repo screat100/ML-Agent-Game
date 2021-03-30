@@ -71,16 +71,9 @@ public class AreaSetting : MonoBehaviour
 
 
     // 문 밖으로 나가면 2의 보상을 받고 에피소드를 종료한다. 
-    public void Scored(GameObject m_agent)
+    public void Scored()
     {
-        bool flag=m_agent.GetComponent<MyAgent>().Key;
-        if(flag)
-        {
-            m_AgentGroup.AddGroupReward(2f);
-        }
-        else{
-            m_AgentGroup.AddGroupReward(-0.5f);
-        }
+        m_AgentGroup.AddGroupReward(2f);
         m_AgentGroup.EndGroupEpisode();
         ResetScene();
     }
@@ -90,19 +83,15 @@ public class AreaSetting : MonoBehaviour
     {
         DoorList[OpenDoorIndex].transform.Find("Door_left").transform.localRotation = Quaternion.Euler(0, -90, 0);
         DoorList[OpenDoorIndex].transform.Find("Door_right").transform.localRotation = Quaternion.Euler(0, 90, 0);
+
         m_AgentGroup.AddGroupReward(1f);
     }
-    public void DoorClose()
-    {
-        DoorList[OpenDoorIndex].transform.Find("Door_left").transform.localRotation = Quaternion.Euler(0, 0, 0);
-        DoorList[OpenDoorIndex].transform.Find("Door_right").transform.localRotation = Quaternion.Euler(0, 0, 0);
-        m_AgentGroup.AddGroupReward(-1f);
-    }
+
 
     void ResetScene()
     {
         m_ResetTimer = 0;
-        
+
         // reset agents
         foreach (var item in AgentsList)
         {
@@ -110,14 +99,7 @@ public class AreaSetting : MonoBehaviour
             item.Agent.transform.rotation = item.StartingRot;
             item.Rb.velocity = Vector3.zero;
             item.Rb.angularVelocity = Vector3.zero;
-            item.Agent.Key=false;
-            item.Agent.MyKey.SetActive(false);
         }
-
-        //key player active
-        int key_player=Random.Range(0,AgentsList.Count);
-        AgentsList[key_player].Agent.Key=true;
-        AgentsList[key_player].Agent.MyKey.SetActive(true);
 
         // reset door & wall pos
         DoorList[OpenDoorIndex].transform.Find("Door_left").transform.localRotation = Quaternion.Euler(0, 0, 0);

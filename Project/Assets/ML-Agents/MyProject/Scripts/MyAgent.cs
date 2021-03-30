@@ -12,10 +12,6 @@ public class MyAgent : Agent
     private Rigidbody m_AgentRb;
     public Opener openner;
 
-    [System.NonSerialized]
-    public bool Key;
-    
-    public GameObject MyKey;
     public override void Initialize()
     {
         m_AgentRb = GetComponent<Rigidbody>();
@@ -62,7 +58,6 @@ public class MyAgent : Agent
     public override void CollectObservations(VectorSensor sensor)
     {
         sensor.AddObservation(openner.isOpen);
-        sensor.AddObservation(Key);
     }
 
     public override void Heuristic(in ActionBuffers actionsOut)
