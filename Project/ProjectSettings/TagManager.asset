@@ -39,6 +39,9 @@ TagManager:
   - portal
   - door
   - opener
+  - runner
+  - chaser
+  - obstacle
   layers:
   - Default
   - TransparentFX

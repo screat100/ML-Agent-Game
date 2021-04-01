@@ -2,31 +2,58 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
-using Unity.MLAgents.Sensors;
+using Unity.MLAgents.Policies;
 using UnityEngine;
 
-public class MyAgent : Agent
+public class ChaserVsRunner_Agent : Agent
 {
     [SerializeField]
-    private AreaSetting m_AreaSetting;
+    private ChaserVsRunner_Area m_AreaSetting;
     private Rigidbody m_AgentRb;
-    public Opener openner;
+    BehaviorParameters m_behaviorParameters;
 
-    private void Update()
+    public enum Team
     {
-        if(m_AgentRb.velocity.magnitude > 0.05f)
+        Chaser = 0,
+        Runner = 1,
+    }
+
+    public Team team;
+
+    
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(team == Team.Chaser && collision.transform.tag == "runner")
         {
+            m_AreaSetting.RunnerIsCatched();
+            collision.gameObject.SetActive(false);
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        // animation
+        if (m_AgentRb.velocity.magnitude > 0.05f)
             gameObject.GetComponent<Animator>().SetBool("Run", true);
-        }
         else
-        {
             gameObject.GetComponent<Animator>().SetBool("Run", false);
-        }
     }
 
     public override void Initialize()
     {
         m_AgentRb = GetComponent<Rigidbody>();
+        m_behaviorParameters = gameObject.GetComponent<BehaviorParameters>();
+
+        if (m_behaviorParameters.TeamId == (int)Team.Chaser)
+        {
+            team = Team.Chaser;
+        }
+        else if (m_behaviorParameters.TeamId == (int)Team.Runner)
+        {
+            team = Team.Runner;
+        }
+
     }
 
     public void MoveAgent(ActionSegment<int> act)
@@ -67,11 +94,6 @@ public class MyAgent : Agent
         MoveAgent(actions.DiscreteActions);
     }
 
-    public override void CollectObservations(VectorSensor sensor)
-    {
-        sensor.AddObservation(openner.isOpen);
-    }
-
     public override void Heuristic(in ActionBuffers actionsOut)
     {
         var discreteActionsOut = actionsOut.DiscreteActions;
@@ -104,4 +126,9 @@ public class MyAgent : Agent
             discreteActionsOut[0] = 6;
         }
     }
+
+
+
+
+
 }
