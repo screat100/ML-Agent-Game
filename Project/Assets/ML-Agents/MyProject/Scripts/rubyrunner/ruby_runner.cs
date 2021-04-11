@@ -3,15 +3,25 @@ using System.Collections.Generic;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Policies;
+using Unity.MLAgents.Sensors;
 using UnityEngine;
 
-public class ChaserVsRunner_Agent : Agent
+public class ruby_runner : Agent
 {
     [SerializeField]
-    private ChaserVsRunner_Area m_AreaSetting;
+    private ruby_AreaSetting m_AreaSetting;
     private Rigidbody m_AgentRb;
-    BehaviorParameters m_behaviorParameters;
 
+    [System.NonSerialized]
+    public bool hasruby;
+    
+    [System.NonSerialized]
+    public float recently_distance;
+    [System.NonSerialized]
+    public float current_distance;
+
+    BehaviorParameters m_behaviorParameters;
+    public GameObject ruby;
     public enum Team
     {
         Chaser = 0,
@@ -19,32 +29,12 @@ public class ChaserVsRunner_Agent : Agent
     }
 
     public Team team;
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        if(team == Team.Chaser && collision.transform.tag == "runner")
-        {
-            collision.gameObject.SetActive(false);
-            m_AreaSetting.RunnerIsCatched();
-            
-        }
-    }
-
-    private void FixedUpdate()
-    {
-        // animation
-        if (m_AgentRb.velocity.magnitude > 0.05f)
-            gameObject.GetComponent<Animator>().SetBool("Run", true);
-        else
-            gameObject.GetComponent<Animator>().SetBool("Run", false);
-    }
-
     public override void Initialize()
     {
         m_AgentRb = GetComponent<Rigidbody>();
+        recently_distance=Vector3.Distance(m_AreaSetting.goal.transform.position, transform.position);
         m_behaviorParameters = gameObject.GetComponent<BehaviorParameters>();
-
-        if (m_behaviorParameters.TeamId == (int)Team.Chaser)
+         if (m_behaviorParameters.TeamId == (int)Team.Chaser)
         {
             team = Team.Chaser;
         }
@@ -52,9 +42,29 @@ public class ChaserVsRunner_Agent : Agent
         {
             team = Team.Runner;
         }
-
     }
+     private void FixedUpdate()
+    {
+        if(m_AreaSetting.agentRunSpeed<m_AgentRb.velocity.z)
+        {
+            m_AgentRb.velocity=new Vector3(m_AgentRb.velocity.x,0,m_AreaSetting.agentRunSpeed);
+        }
 
+        if(-m_AreaSetting.agentRunSpeed>m_AgentRb.velocity.z)
+        {
+            m_AgentRb.velocity=new Vector3(m_AgentRb.velocity.x,0,-m_AreaSetting.agentRunSpeed);
+        }
+
+        if(m_AreaSetting.agentRunSpeed<m_AgentRb.velocity.x)
+        {
+            m_AgentRb.velocity=new Vector3(m_AreaSetting.agentRunSpeed,0,m_AgentRb.velocity.z);
+        }
+
+        if(-m_AreaSetting.agentRunSpeed>m_AgentRb.velocity.x)
+        {
+            m_AgentRb.velocity=new Vector3(-m_AreaSetting.agentRunSpeed,0,m_AgentRb.velocity.z);
+        }
+    }
     public void MoveAgent(ActionSegment<int> act)
     {
         var dirToGo = Vector3.zero;
@@ -83,6 +93,7 @@ public class ChaserVsRunner_Agent : Agent
                 dirToGo = transform.right * 0.75f;
                 break;
         }
+        
         transform.Rotate(rotateDir, Time.fixedDeltaTime * 200f);
         m_AgentRb.AddForce(dirToGo * m_AreaSetting.agentRunSpeed,
             ForceMode.VelocityChange);
@@ -91,6 +102,17 @@ public class ChaserVsRunner_Agent : Agent
     public override void OnActionReceived(ActionBuffers actions)
     {
         MoveAgent(actions.DiscreteActions);
+    }
+
+    public override void CollectObservations(VectorSensor sensor)
+    {
+        sensor.AddObservation(hasruby);
+        sensor.AddObservation(m_AreaSetting.goal.transform.localPosition.x);
+        sensor.AddObservation(m_AreaSetting.goal.transform.localPosition.z);
+        sensor.AddObservation(transform.localPosition.x);
+        sensor.AddObservation(transform.localPosition.z);
+        sensor.AddObservation(m_AreaSetting.runnerList[m_AreaSetting.key_player].agent.transform.localPosition.x);
+        sensor.AddObservation(m_AreaSetting.runnerList[m_AreaSetting.key_player].agent.transform.localPosition.z);
     }
 
     public override void Heuristic(in ActionBuffers actionsOut)

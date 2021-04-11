@@ -94,7 +94,7 @@ public class ChaserVsRunner_Area : MonoBehaviour
         }
 
         // Time Flow => Chaser penalty
-        chaserGroup.AddGroupReward((float)runnerList.Count / MaxEnvironmentSteps);
+        chaserGroup.AddGroupReward(-(float)runnerList.Count / MaxEnvironmentSteps);
     }
 
 
