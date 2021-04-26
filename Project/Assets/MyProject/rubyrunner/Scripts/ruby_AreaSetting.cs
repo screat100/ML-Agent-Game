@@ -43,6 +43,9 @@ public class ruby_AreaSetting : MonoBehaviour
     public List<ChaserInfo> chaserList;
     public List<RunnerInfo> runnerList;
 
+    public List<GameObject> Sectors;
+
+    public List<GameObject> Doorlist;
     private SimpleMultiAgentGroup chaserGroup;
     private SimpleMultiAgentGroup runnerGroup;
 
@@ -50,13 +53,18 @@ public class ruby_AreaSetting : MonoBehaviour
     [HideInInspector]
     public int m_ResetTimer;
     [HideInInspector]
-    public int willCatchNum;
+    public int willCatchNum; //Chaser가 잡을수있는 러너 수
 
-    public GameObject goal;
-    bool rubygoal;
-    int escapenum;
+    bool rubygoal;  //루비를 든 러너 탈출 확인
+    int escapenum; //탈출 성공한 러너 수
+    int goalIndex; //현재 goal의 index
+    [System.NonSerialized]
+    public int key_player; //현재 runnerlist중 ruby를 가진 멤버의 인덱스
 
-    public int key_player;
+    [System.NonSerialized]
+    public bool findruby; //루비를 러너가 먹었을 시 활성화.
+
+    public rubytrigger ruby;
     // Start is called before the first frame update
     void Start()
     {
@@ -86,19 +94,9 @@ public class ruby_AreaSetting : MonoBehaviour
     private void FixedUpdate()
     {
         m_ResetTimer++;
-
+        runnerGroup.AddGroupReward(-1.5f/MaxEnvironmentSteps);
+   
         
-        runnerList[key_player].agent.current_distance=Vector3.Distance(goal.transform.position, runnerList[key_player].agent.transform.position);
-        float start_dis=Vector3.Distance(runnerList[key_player].startPos,goal.transform.localPosition);
-
-        if(!rubygoal){
-            runnerGroup.AddGroupReward(-runnerList[key_player].agent.current_distance/(start_dis*1000f));
-        }
-        else{
-            runnerGroup.AddGroupReward(-1/MaxEnvironmentSteps);
-        }
-        runnerList[key_player].agent.recently_distance=runnerList[key_player].agent.current_distance;
-
         if(m_ResetTimer > MaxEnvironmentSteps)
         {
             chaserGroup.AddGroupReward(-escapenum);
@@ -114,37 +112,32 @@ public class ruby_AreaSetting : MonoBehaviour
         }
 
     }
-
+    public void rubyGet(){
+        runnerGroup.AddGroupReward(1.5f);
+    }
 
    public void Scored(GameObject m_agent,bool iscaught)
     {
         bool flag=m_agent.GetComponent<ruby_runner>().hasruby;
 
+        //잡혔을때
         if(iscaught){
             willCatchNum--;
             chaserGroup.AddGroupReward(1.0f);
             runnerGroup.AddGroupReward(-1.0f);
-            //보석을 가지고있는 애가 잡히면 그룹처벌
-            // if(flag)
-            // {
-            //    runnerGroup.AddGroupReward(-1.0f);
-            // }
-            // else{
-            //     runnerGroup.AddGroupReward(-0.3f);
-            // }
 
         }
+        //탈출했을때
         else{
             willCatchNum--;
             escapenum++;
-            //chaserGroup.AddGroupReward(-1.0f);
 
-            //보석을 가지고있는 애가 탈출하면 더 큰 보상
             if(flag)
             {
                 rubygoal=true;
             }
         }
+
          if (willCatchNum <=0)
             {
                 if(rubygoal){
@@ -185,15 +178,20 @@ public class ruby_AreaSetting : MonoBehaviour
             item.agent.ruby.SetActive(false);
         }
 
-        //key player active
-        key_player=Random.Range(0,runnerList.Count);
-        runnerList[key_player].agent.hasruby=true;
-        runnerList[key_player].agent.ruby.SetActive(true);
+        //루비 위치 랜덤으로 활성화
+        int hidden_rubySector=Random.Range(0,Sectors.Count);
+        ruby.resetPlace(hidden_rubySector);
+
         m_ResetTimer = 0;
         willCatchNum = runnerList.Count;
         rubygoal=false;
+        Doorlist[goalIndex].GetComponent<ruby_goal>().Goal_reset();
         escapenum=0;
     }
-
+    public void random_goal()
+    {
+        goalIndex=Random.Range(0,Doorlist.Count);
+        Doorlist[goalIndex].GetComponent<ruby_goal>().select_finishGoal();
+    }
 
 }

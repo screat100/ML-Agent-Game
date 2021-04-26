@@ -14,11 +14,6 @@ public class ruby_runner : Agent
 
     [System.NonSerialized]
     public bool hasruby;
-    
-    [System.NonSerialized]
-    public float recently_distance;
-    [System.NonSerialized]
-    public float current_distance;
 
     BehaviorParameters m_behaviorParameters;
     public GameObject ruby;
@@ -32,7 +27,6 @@ public class ruby_runner : Agent
     public override void Initialize()
     {
         m_AgentRb = GetComponent<Rigidbody>();
-        recently_distance=Vector3.Distance(m_AreaSetting.goal.transform.position, transform.position);
         m_behaviorParameters = gameObject.GetComponent<BehaviorParameters>();
          if (m_behaviorParameters.TeamId == (int)Team.Chaser)
         {
@@ -45,6 +39,12 @@ public class ruby_runner : Agent
     }
      private void FixedUpdate()
     {
+         // animation
+        if (m_AgentRb.velocity.magnitude > 0.05f)
+            gameObject.GetComponent<Animator>().SetBool("Run", true);
+        else
+            gameObject.GetComponent<Animator>().SetBool("Run", false);
+            
         if(m_AreaSetting.agentRunSpeed<m_AgentRb.velocity.z)
         {
             m_AgentRb.velocity=new Vector3(m_AgentRb.velocity.x,0,m_AreaSetting.agentRunSpeed);
@@ -107,8 +107,8 @@ public class ruby_runner : Agent
     public override void CollectObservations(VectorSensor sensor)
     {
         sensor.AddObservation(hasruby);
-        sensor.AddObservation(m_AreaSetting.goal.transform.localPosition.x);
-        sensor.AddObservation(m_AreaSetting.goal.transform.localPosition.z);
+        sensor.AddObservation(m_AreaSetting.findruby);
+        sensor.AddObservation(transform.InverseTransformDirection(m_AgentRb.velocity));
         sensor.AddObservation(transform.localPosition.x);
         sensor.AddObservation(transform.localPosition.z);
         sensor.AddObservation(m_AreaSetting.runnerList[m_AreaSetting.key_player].agent.transform.localPosition.x);
