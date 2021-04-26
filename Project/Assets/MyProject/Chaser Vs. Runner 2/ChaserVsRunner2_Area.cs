@@ -61,15 +61,15 @@ public class ChaserVsRunner2_Area : MonoBehaviour
 
         foreach (var item in chaserList)
         {
-            item.startPos = item.agent.transform.position;
-            item.startRot = item.agent.transform.rotation;
+            item.startPos = item.agent.transform.localPosition;
+            item.startRot = item.agent.transform.localRotation;
             item.rb = item.agent.GetComponent<Rigidbody>();
             chaserGroup.RegisterAgent(item.agent);
         }
         foreach (var item in runnerList)
         {
-            item.startPos = item.agent.transform.position;
-            item.startRot = item.agent.transform.rotation;
+            item.startPos = item.agent.transform.localPosition;
+            item.startRot = item.agent.transform.localRotation;
             item.rb = item.agent.GetComponent<Rigidbody>();
             runnerGroup.RegisterAgent(item.agent);
         }
@@ -83,18 +83,20 @@ public class ChaserVsRunner2_Area : MonoBehaviour
     {
         m_ResetTimer++;
 
+        // Time Flow => Chaser penalty
+        chaserGroup.AddGroupReward(- 1.0f / MaxEnvironmentSteps);
 
         // Time Over => Runner win!
         if (m_ResetTimer > MaxEnvironmentSteps)
         {
-            runnerGroup.AddGroupReward(runnerList.Count);
+            runnerGroup.SetGroupReward(1.0f);
+            chaserGroup.SetGroupReward(-1.0f);
             runnerGroup.GroupEpisodeInterrupted();
             chaserGroup.GroupEpisodeInterrupted();
             ResetScene();
         }
 
-        // Time Flow => Chaser penalty
-        chaserGroup.AddGroupReward(-(float)runnerList.Count / MaxEnvironmentSteps);
+        
     }
 
 
@@ -103,18 +105,23 @@ public class ChaserVsRunner2_Area : MonoBehaviour
     public void RunnerIsCatched()
     {
         catchedRunnerNum++;
-        chaserGroup.AddGroupReward(1.0f);
-        runnerGroup.AddGroupReward(-1.0f);
+        chaserGroup.AddGroupReward(1.0f/runnerList.Count);
+        runnerGroup.AddGroupReward(-1.0f/runnerList.Count);
 
         // All runners are catched => chaser win!
         if (catchedRunnerNum >= runnerList.Count)
         {
+            chaserGroup.SetGroupReward(1.0f);
+            runnerGroup.SetGroupReward(-1.0f);
             runnerGroup.GroupEpisodeInterrupted();
             chaserGroup.GroupEpisodeInterrupted();
             ResetScene();
         }
 
     }
+
+
+
 
 
     void ResetScene()

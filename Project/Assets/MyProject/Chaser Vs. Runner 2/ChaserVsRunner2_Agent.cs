@@ -100,7 +100,7 @@ public class ChaserVsRunner2_Agent : Agent
 
     public override void CollectObservations(VectorSensor sensor)
     {
-        
+        sensor.AddObservation(transform.InverseTransformDirection(m_AgentRb.velocity));
     }
 
     public override void Heuristic(in ActionBuffers actionsOut)
