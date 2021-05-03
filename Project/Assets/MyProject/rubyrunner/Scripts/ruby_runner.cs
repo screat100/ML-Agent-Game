@@ -5,7 +5,7 @@ using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Policies;
 using Unity.MLAgents.Sensors;
 using UnityEngine;
-
+using UnityEngine.AI;
 public class ruby_runner : Agent
 {
     [SerializeField]
@@ -16,6 +16,7 @@ public class ruby_runner : Agent
     public bool hasruby;
 
     BehaviorParameters m_behaviorParameters;
+    private bool SenseEnemy;
     public GameObject ruby;
     public enum Team
     {
@@ -24,9 +25,15 @@ public class ruby_runner : Agent
     }
 
     public Team team;
+    [System.NonSerialized]
+
+    public NavMeshAgent m_navagent;
+    public LayerMask m_chaserlayermask=0;
+    public LayerMask m_Goallayermask=0;
     public override void Initialize()
     {
         m_AgentRb = GetComponent<Rigidbody>();
+        m_navagent = GetComponent<NavMeshAgent>();
         m_behaviorParameters = gameObject.GetComponent<BehaviorParameters>();
          if (m_behaviorParameters.TeamId == (int)Team.Chaser)
         {
@@ -39,6 +46,19 @@ public class ruby_runner : Agent
     }
      private void FixedUpdate()
     {
+        if(SenseEnemy){
+            
+        }
+
+        if(m_AreaSetting.DetectGoal&&hasruby){
+            m_navagent.isStopped=false;
+            m_navagent.updatePosition=true;
+            m_navagent.updateRotation=true;
+            m_navagent.SetDestination(m_AreaSetting.Doorlist[m_AreaSetting.goalIndex].transform.position+new Vector3(2.5f,0,0));
+        }
+        //Goal 찾기
+        Detect();
+
          // animation
         if (m_AgentRb.velocity.magnitude > 0.05f)
             gameObject.GetComponent<Animator>().SetBool("Run", true);
@@ -64,6 +84,45 @@ public class ruby_runner : Agent
         {
             m_AgentRb.velocity=new Vector3(-m_AreaSetting.agentRunSpeed,0,m_AgentRb.velocity.z);
         }
+    }
+    void Detect()
+    {
+        //감지거리에 Goal 이 있을 때 다른 러너와 위치 공유
+        Collider[] Goals=Physics.OverlapSphere(transform.position,m_AreaSetting.RunnerDetectRadius,m_Goallayermask);
+
+        if(Goals.Length>0){
+                Vector3 dir=(Goals[0].transform.position-transform.position).normalized;
+                float t_angle = Vector3.Angle(dir, transform.forward);
+                float m_SightAngle=gameObject.GetComponent<RayPerceptionSensorComponent3D>().MaxRayDegrees*2f;
+                //시야각에 잡히면
+                if(t_angle <m_SightAngle * 0.5f){
+                    RaycastHit hit;
+                    if(Physics.Raycast(transform.position+Vector3.up, dir, out hit)){
+                        if(hit.collider.tag=="goal"&&!m_AreaSetting.DetectGoal){
+                            m_AreaSetting.DetectGoal=true;
+                            //m_AreaSetting.Reward_Get(0.5f);
+                        }
+                    }
+                }
+        }
+
+        //주변에 Chaser가 있을 때 감지
+        SenseEnemy=false;
+        
+
+        Collider[] Enemys=Physics.OverlapSphere(transform.position,m_AreaSetting.RunnerDetectRadius, m_chaserlayermask);
+
+        if(Enemys.Length>0){
+            SenseEnemy=true;
+            // RaycastHit hit;
+            // Vector3 dir=Enemys[0].transform.position-transform.position;
+            // if(Physics.Raycast(transform.position+Vector3.up, dir, out hit)){
+            //     if(hit.collider.tag=="chaser"){
+            //         SenseEnemy=true;
+            //     }
+            // }
+        }
+
     }
     public void MoveAgent(ActionSegment<int> act)
     {
@@ -107,12 +166,22 @@ public class ruby_runner : Agent
     public override void CollectObservations(VectorSensor sensor)
     {
         sensor.AddObservation(hasruby);
-        sensor.AddObservation(m_AreaSetting.findruby);
+        //sensor.AddObservation(SenseEnemy);
+        //sensor.AddObservation(m_AreaSetting.findruby);
         sensor.AddObservation(transform.InverseTransformDirection(m_AgentRb.velocity));
-        sensor.AddObservation(transform.localPosition.x);
-        sensor.AddObservation(transform.localPosition.z);
-        sensor.AddObservation(m_AreaSetting.runnerList[m_AreaSetting.key_player].agent.transform.localPosition.x);
-        sensor.AddObservation(m_AreaSetting.runnerList[m_AreaSetting.key_player].agent.transform.localPosition.z);
+        sensor.AddObservation(m_AreaSetting.DetectGoal);
+        // sensor.AddObservation(transform.localPosition.x);
+        // sensor.AddObservation(transform.localPosition.z);
+        // sensor.AddObservation(m_AreaSetting.Doorlist[m_AreaSetting.goalIndex].transform.localPosition.x);
+        // sensor.AddObservation(m_AreaSetting.Doorlist[m_AreaSetting.goalIndex].transform.localPosition.z);
+
+        // if(m_AreaSetting.DetectGoal){
+        //      sensor.AddObservation(m_AreaSetting.Doorlist[m_AreaSetting.goalIndex].transform.localPosition.x);
+        //      sensor.AddObservation(m_AreaSetting.Doorlist[m_AreaSetting.goalIndex].transform.localPosition.z);
+        // }
+        // else if(m_AreaSetting.RunBrain){
+            
+        // }
     }
 
     public override void Heuristic(in ActionBuffers actionsOut)

@@ -4,7 +4,7 @@ using UnityEngine;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Policies;
-
+using Unity.MLAgents.Sensors;
 public class ruby_chaser : Agent
 {
      [SerializeField]
@@ -62,7 +62,7 @@ public class ruby_chaser : Agent
     {
         m_AgentRb = GetComponent<Rigidbody>();
         m_behaviorParameters = gameObject.GetComponent<BehaviorParameters>();
-        speed=m_AreaSetting.agentRunSpeed*0.75f;
+        speed=m_AreaSetting.agentRunSpeed*0.25f;
         if (m_behaviorParameters.TeamId == (int)Team.Chaser)
         {
             team = Team.Chaser;
@@ -111,7 +111,10 @@ public class ruby_chaser : Agent
     {
         MoveAgent(actions.DiscreteActions);
     }
-
+    public override void CollectObservations(VectorSensor sensor)
+    {
+        sensor.AddObservation(transform.InverseTransformDirection(m_AgentRb.velocity));
+    }
     public override void Heuristic(in ActionBuffers actionsOut)
     {
         var discreteActionsOut = actionsOut.DiscreteActions;

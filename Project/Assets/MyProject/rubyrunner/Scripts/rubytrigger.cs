@@ -16,20 +16,24 @@ public class rubytrigger : MonoBehaviour
     {
         
     }
-    void OnCollisionEnter(Collision other){
+    void OnCollisionEnter(Collision other)
+    /*
+        루비에 충돌 시, 해당 러너 루비 흭득
+    */
+    {
         if(other.gameObject.tag=="runner")
         {
             other.gameObject.GetComponent<ruby_runner>().hasruby=true;
             other.gameObject.GetComponent<ruby_runner>().ruby.SetActive(true);
-            m_areaSetting.findruby=true;
+            //m_areaSetting.findruby=true;
             for(int i=0;i<m_areaSetting.runnerList.Count;i++){
                 if(m_areaSetting.runnerList[i].rb==other.gameObject.GetComponent<Rigidbody>()){
                     m_areaSetting.key_player=i;
                 }
             }
-            m_areaSetting.random_goal();
-            m_areaSetting.rubyGet();
             gameObject.SetActive(false);
+            m_areaSetting.random_goal(); //랜덤한 위치에 Goal 활성화
+            m_areaSetting.Reward_RubyGet(); //루비흭득에 따른 보상
         }
     }
     public void resetPlace(int spawnSector){
