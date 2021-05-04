@@ -50,7 +50,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 577d86c4ca1f0c645811b5df667f35b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxEnvironmentSteps: 15000
+  MaxEnvironmentSteps: 10000
   chaserList:
   - agent: {fileID: 2084883759259197114}
     startPos: {x: 0, y: 0, z: 0}
@@ -103,12 +103,12 @@ MonoBehaviour:
   - {fileID: 5435264850127520337}
   - {fileID: 2566022366055274205}
   - {fileID: 238400298279663706}
-  agentRunSpeed: 5
+  agentRunSpeed: 15
   RunnerDetectRadius: 20
   m_ResetTimer: 0
   willCatchNum: 0
   ruby: {fileID: 548254670387722913}
-  train: 1
+  train: 2
 --- !u!136 &227998323987045288
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -252,7 +252,7 @@ PrefabInstance:
     - target: {fileID: 8936493565734935681, guid: e0a437371727c604c8410418fd56e1c7,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8936493565734935711, guid: e0a437371727c604c8410418fd56e1c7,
         type: 3}
@@ -412,11 +412,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: rubyrunner (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 4610330879273923740, guid: 3abffc47ef0ce3b43b1175bab9e35b85,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4610330879273923751, guid: 3abffc47ef0ce3b43b1175bab9e35b85,
         type: 3}
       propertyPath: m_Model
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 5022602860645237092, guid: 66361947e6401214180dfd7c6180d223,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3abffc47ef0ce3b43b1175bab9e35b85, type: 3}
 --- !u!4 &3156548614389963709 stripped
@@ -509,11 +515,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: rubyrunner (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 4610330879273923740, guid: 3abffc47ef0ce3b43b1175bab9e35b85,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4610330879273923751, guid: 3abffc47ef0ce3b43b1175bab9e35b85,
         type: 3}
       propertyPath: m_Model
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 5022602860645237092, guid: 66361947e6401214180dfd7c6180d223,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3abffc47ef0ce3b43b1175bab9e35b85, type: 3}
 --- !u!4 &3156548614039247620 stripped
@@ -606,11 +618,27 @@ PrefabInstance:
       propertyPath: m_Name
       value: rubyrunner
       objectReference: {fileID: 0}
+    - target: {fileID: 4610330879273923741, guid: 3abffc47ef0ce3b43b1175bab9e35b85,
+        type: 3}
+      propertyPath: rayMissColor.b
+      value: 0.9811321
+      objectReference: {fileID: 0}
+    - target: {fileID: 4610330879273923741, guid: 3abffc47ef0ce3b43b1175bab9e35b85,
+        type: 3}
+      propertyPath: rayMissColor.g
+      value: 0.9811321
+      objectReference: {fileID: 0}
+    - target: {fileID: 4610330879273923741, guid: 3abffc47ef0ce3b43b1175bab9e35b85,
+        type: 3}
+      propertyPath: rayMissColor.r
+      value: 0.9811321
+      objectReference: {fileID: 0}
     - target: {fileID: 4610330879273923751, guid: 3abffc47ef0ce3b43b1175bab9e35b85,
         type: 3}
       propertyPath: m_Model
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 5022602860645237092, guid: 66361947e6401214180dfd7c6180d223,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3abffc47ef0ce3b43b1175bab9e35b85, type: 3}
 --- !u!4 &7326399727874687215 stripped
@@ -976,7 +1004,7 @@ PrefabInstance:
     - target: {fileID: 2344372890350848291, guid: b30ed9dc50e1d3b4383e6f83c9607f24,
         type: 3}
       propertyPath: m_TagString
-      value: Untagged
+      value: wall
       objectReference: {fileID: 0}
     - target: {fileID: 2349395779667752337, guid: b30ed9dc50e1d3b4383e6f83c9607f24,
         type: 3}
@@ -1656,7 +1684,7 @@ PrefabInstance:
     - target: {fileID: 6607669336086649619, guid: b30ed9dc50e1d3b4383e6f83c9607f24,
         type: 3}
       propertyPath: m_TagString
-      value: Untagged
+      value: wall
       objectReference: {fileID: 0}
     - target: {fileID: 6628571256132801938, guid: b30ed9dc50e1d3b4383e6f83c9607f24,
         type: 3}
@@ -1771,7 +1799,7 @@ PrefabInstance:
     - target: {fileID: 7428678618641903344, guid: b30ed9dc50e1d3b4383e6f83c9607f24,
         type: 3}
       propertyPath: m_TagString
-      value: Untagged
+      value: wall
       objectReference: {fileID: 0}
     - target: {fileID: 7472101658908770404, guid: b30ed9dc50e1d3b4383e6f83c9607f24,
         type: 3}
@@ -1781,7 +1809,7 @@ PrefabInstance:
     - target: {fileID: 7473966223718314684, guid: b30ed9dc50e1d3b4383e6f83c9607f24,
         type: 3}
       propertyPath: m_TagString
-      value: Untagged
+      value: wall
       objectReference: {fileID: 0}
     - target: {fileID: 7474216511327296762, guid: b30ed9dc50e1d3b4383e6f83c9607f24,
         type: 3}

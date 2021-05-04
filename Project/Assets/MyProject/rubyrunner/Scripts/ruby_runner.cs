@@ -47,7 +47,11 @@ public class ruby_runner : Agent
      private void FixedUpdate()
     {
         if(SenseEnemy){
-            
+            m_AreaSetting.Reward_Get(-1f/m_AreaSetting.MaxEnvironmentSteps);
+        }
+
+        if(m_AgentRb.velocity.magnitude > m_AreaSetting.agentRunSpeed*0.5f){
+            m_AreaSetting.Reward_Get(+1f/m_AreaSetting.MaxEnvironmentSteps);
         }
 
         if(m_AreaSetting.DetectGoal&&hasruby){
@@ -165,23 +169,21 @@ public class ruby_runner : Agent
 
     public override void CollectObservations(VectorSensor sensor)
     {
-        sensor.AddObservation(hasruby);
-        //sensor.AddObservation(SenseEnemy);
-        //sensor.AddObservation(m_AreaSetting.findruby);
-        sensor.AddObservation(transform.InverseTransformDirection(m_AgentRb.velocity));
-        sensor.AddObservation(m_AreaSetting.DetectGoal);
-        // sensor.AddObservation(transform.localPosition.x);
-        // sensor.AddObservation(transform.localPosition.z);
-        // sensor.AddObservation(m_AreaSetting.Doorlist[m_AreaSetting.goalIndex].transform.localPosition.x);
-        // sensor.AddObservation(m_AreaSetting.Doorlist[m_AreaSetting.goalIndex].transform.localPosition.z);
-
-        // if(m_AreaSetting.DetectGoal){
-        //      sensor.AddObservation(m_AreaSetting.Doorlist[m_AreaSetting.goalIndex].transform.localPosition.x);
-        //      sensor.AddObservation(m_AreaSetting.Doorlist[m_AreaSetting.goalIndex].transform.localPosition.z);
-        // }
-        // else if(m_AreaSetting.RunBrain){
-            
-        // }
+        if(m_AreaSetting.train==ruby_AreaSetting.TrainBrain.DetectRubyBrain){
+            sensor.AddObservation(hasruby); //필요없으므로 이후 SenseEnemy로 교체 또는 벡터 사이즈 변경 가능 여부 확인할예정
+            sensor.AddObservation(transform.InverseTransformDirection(m_AgentRb.velocity));
+            sensor.AddObservation(m_AreaSetting.DetectGoal);
+        }
+        else if(m_AreaSetting.train==ruby_AreaSetting.TrainBrain.DetectGoalBrain){
+            sensor.AddObservation(hasruby);
+            sensor.AddObservation(transform.InverseTransformDirection(m_AgentRb.velocity));
+            sensor.AddObservation(m_AreaSetting.DetectGoal);
+        }
+        else if(m_AreaSetting.train==ruby_AreaSetting.TrainBrain.RunBrain){
+            sensor.AddObservation(SenseEnemy);
+            sensor.AddObservation(transform.InverseTransformDirection(m_AgentRb.velocity));
+            sensor.AddObservation(m_AreaSetting.DetectGoal); //필요없으므로 이후 벡터 사이즈 변경 가능 여부 확인
+        }
     }
 
     public override void Heuristic(in ActionBuffers actionsOut)

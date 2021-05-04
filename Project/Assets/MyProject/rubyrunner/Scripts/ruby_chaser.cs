@@ -62,7 +62,7 @@ public class ruby_chaser : Agent
     {
         m_AgentRb = GetComponent<Rigidbody>();
         m_behaviorParameters = gameObject.GetComponent<BehaviorParameters>();
-        speed=m_AreaSetting.agentRunSpeed*0.25f;
+        speed=m_AreaSetting.agentRunSpeed*0.9f;
         if (m_behaviorParameters.TeamId == (int)Team.Chaser)
         {
             team = Team.Chaser;
