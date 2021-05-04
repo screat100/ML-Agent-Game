@@ -42,6 +42,8 @@ TagManager:
   - runner
   - chaser
   - obstacle
+  - police
+  - thief
   layers:
   - Default
   - TransparentFX
