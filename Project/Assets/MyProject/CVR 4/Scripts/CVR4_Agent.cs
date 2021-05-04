@@ -95,7 +95,7 @@ public class CVR4_Agent : Agent
     }
     public override void CollectObservations(VectorSensor sensor)
     {
-        sensor.AddObservation(m_AreaSetting.m_ResetTimer);
+        sensor.AddObservation(m_AreaSetting.m_ResetTimer / m_AreaSetting.MaxEnvironmentSteps);
     }
 
     public override void OnActionReceived(ActionBuffers actions)

@@ -23,7 +23,7 @@ public class CVR4_Area : MonoBehaviour
 
 
 
-    [Header("Max Environment Steps")] public int MaxEnvironmentSteps = 1500; // 50 (per 1 second)
+    [Header("Max Environment Steps")] public int MaxEnvironmentSteps ; // 50 (per 1 second)
 
     public List<AgentInfo> chaserList;
     public List<AgentInfo> runnerList;
@@ -70,7 +70,7 @@ public class CVR4_Area : MonoBehaviour
     {
         m_ResetTimer++;
 
-        // time penalty 
+        // time penalty & advantage
         chaserGroup.AddGroupReward(-1.0f / MaxEnvironmentSteps);
         runnerGroup.AddGroupReward(2.0f / MaxEnvironmentSteps);
 
