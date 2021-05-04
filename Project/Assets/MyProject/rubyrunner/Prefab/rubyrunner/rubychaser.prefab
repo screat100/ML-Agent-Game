@@ -1156,7 +1156,7 @@ MonoBehaviour:
     m_Bits: 4294967291
   m_ObservationStacks: 1
   rayHitColor: {r: 1, g: 0, b: 0, a: 1}
-  rayMissColor: {r: 1, g: 1, b: 1, a: 1}
+  rayMissColor: {r: 0, g: 0.15034962, b: 1, a: 1}
   m_StartVerticalOffset: 0.56
   m_EndVerticalOffset: 0.6
 --- !u!114 &7219681695595188022

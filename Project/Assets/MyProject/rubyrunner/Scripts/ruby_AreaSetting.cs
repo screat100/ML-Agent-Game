@@ -125,6 +125,7 @@ public class ruby_AreaSetting : MonoBehaviour
         if(m_ResetTimer > MaxEnvironmentSteps)
         {
             chaserGroup.AddGroupReward(-willCatchNum);
+            runnerGroup.AddGroupReward(1f);
             //runnerGroup.AddGroupReward(willCatchNum);
             runnerGroup.GroupEpisodeInterrupted();
             if(train!=TrainBrain.DetectGoalBrain&&train!=TrainBrain.DetectRubyBrain)
@@ -235,10 +236,7 @@ public class ruby_AreaSetting : MonoBehaviour
         Doorlist[goalIndex].GetComponent<ruby_goal>().Goal_reset();
         escapenum=0;
 
-        if(train==TrainBrain.RunBrain){
-
-        }
-        else if(train==TrainBrain.DetectGoalBrain)
+        if(train==TrainBrain.DetectGoalBrain)
         {
             RandomPlayerGet_ruby(); //랜덤한 플레이어 루비 흭득(Rubyrunner2 브레인용)
             random_goal();
