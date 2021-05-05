@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.4496233, g: 0.4996972, b: 0.5756563, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -903,10 +903,94 @@ PrefabInstance:
       propertyPath: m_Name
       value: TrainingArea
       objectReference: {fileID: 0}
+    - target: {fileID: 1206717585614107033, guid: 9bf86cb876e008b4e8a90f9fd6a79fed,
+        type: 3}
+      propertyPath: RunModel
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: 66361947e6401214180dfd7c6180d223,
+        type: 3}
+    - target: {fileID: 1206717585614107033, guid: 9bf86cb876e008b4e8a90f9fd6a79fed,
+        type: 3}
+      propertyPath: DetectGoal
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: 3eac75e2380606c419518df38f7b1aad,
+        type: 3}
+    - target: {fileID: 1206717585614107033, guid: 9bf86cb876e008b4e8a90f9fd6a79fed,
+        type: 3}
+      propertyPath: DetectRuby
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: 65be530dbc915154f875255906b639d2,
+        type: 3}
+    - target: {fileID: 1206717585941754144, guid: 9bf86cb876e008b4e8a90f9fd6a79fed,
+        type: 3}
+      propertyPath: RunModel
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: 66361947e6401214180dfd7c6180d223,
+        type: 3}
+    - target: {fileID: 1206717585941754144, guid: 9bf86cb876e008b4e8a90f9fd6a79fed,
+        type: 3}
+      propertyPath: DetectGoal
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: 3eac75e2380606c419518df38f7b1aad,
+        type: 3}
+    - target: {fileID: 1206717585941754144, guid: 9bf86cb876e008b4e8a90f9fd6a79fed,
+        type: 3}
+      propertyPath: DetectRuby
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: 65be530dbc915154f875255906b639d2,
+        type: 3}
+    - target: {fileID: 3159928183254206657, guid: 9bf86cb876e008b4e8a90f9fd6a79fed,
+        type: 3}
+      propertyPath: m_DetectableTags.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3159928183254206715, guid: 9bf86cb876e008b4e8a90f9fd6a79fed,
+        type: 3}
+      propertyPath: m_Model
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3159928183451830338, guid: 9bf86cb876e008b4e8a90f9fd6a79fed,
+        type: 3}
+      propertyPath: m_Model
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3159928183451830392, guid: 9bf86cb876e008b4e8a90f9fd6a79fed,
+        type: 3}
+      propertyPath: m_DetectableTags.Array.size
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 3686509097109269059, guid: 9bf86cb876e008b4e8a90f9fd6a79fed,
         type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6835855937808116338, guid: 9bf86cb876e008b4e8a90f9fd6a79fed,
+        type: 3}
+      propertyPath: RunModel
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: 66361947e6401214180dfd7c6180d223,
+        type: 3}
+    - target: {fileID: 6835855937808116338, guid: 9bf86cb876e008b4e8a90f9fd6a79fed,
+        type: 3}
+      propertyPath: DetectGoal
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: 3eac75e2380606c419518df38f7b1aad,
+        type: 3}
+    - target: {fileID: 6835855937808116338, guid: 9bf86cb876e008b4e8a90f9fd6a79fed,
+        type: 3}
+      propertyPath: DetectRuby
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: 65be530dbc915154f875255906b639d2,
+        type: 3}
+    - target: {fileID: 7329776004794028816, guid: 9bf86cb876e008b4e8a90f9fd6a79fed,
+        type: 3}
+      propertyPath: m_Model
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7329776004794028842, guid: 9bf86cb876e008b4e8a90f9fd6a79fed,
+        type: 3}
+      propertyPath: m_DetectableTags.Array.size
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9bf86cb876e008b4e8a90f9fd6a79fed, type: 3}

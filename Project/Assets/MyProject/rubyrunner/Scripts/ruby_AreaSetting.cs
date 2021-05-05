@@ -1,4 +1,4 @@
-    using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.MLAgents;
 using UnityEngine;
@@ -118,6 +118,7 @@ public class ruby_AreaSetting : MonoBehaviour
         if(TrainBrain.RunBrain==train){
             runnerGroup.AddGroupReward(1f/MaxEnvironmentSteps);
         }
+
         else if(TrainBrain.DetectGoalBrain==train||TrainBrain.DetectRubyBrain==train){
              runnerGroup.AddGroupReward(-1f/MaxEnvironmentSteps);
         }
