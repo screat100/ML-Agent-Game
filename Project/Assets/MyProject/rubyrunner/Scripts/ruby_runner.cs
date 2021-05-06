@@ -6,11 +6,24 @@ using Unity.MLAgents.Policies;
 using Unity.MLAgents.Sensors;
 using UnityEngine;
 using UnityEngine.AI;
+using Unity.Barracuda;
+using Unity.MLAgentsExamples;
+
 public class ruby_runner : Agent
 {
     [SerializeField]
     private ruby_AreaSetting m_AreaSetting;
     private Rigidbody m_AgentRb;
+
+    public NNModel DetectGoal;
+    public NNModel DetectRuby;
+    public NNModel RunModel;
+
+    string m_DetectGoalBehaviorName = "DetectGoalBrain";
+    string m_DetectRubyBehaviorName = "DetectRubyBrain";
+    string m_RunModelBehaviorName = "RunBrain";
+
+    int m_Configuration;
 
     [System.NonSerialized]
     public bool hasruby;
@@ -43,10 +56,27 @@ public class ruby_runner : Agent
         {
             team = Team.Runner;
         }
+
+        var modelOverrider = GetComponent<ModelOverrider>();
+        if (modelOverrider.HasOverrides)
+        {
+            DetectGoal = modelOverrider.GetModelForBehaviorName(m_DetectGoalBehaviorName);
+            m_DetectGoalBehaviorName = ModelOverrider.GetOverrideBehaviorName(m_DetectGoalBehaviorName);
+
+            DetectRuby = modelOverrider.GetModelForBehaviorName(m_DetectRubyBehaviorName);
+            m_DetectRubyBehaviorName = ModelOverrider.GetOverrideBehaviorName(m_DetectRubyBehaviorName);
+
+            RunModel = modelOverrider.GetModelForBehaviorName(m_RunModelBehaviorName);
+            m_RunModelBehaviorName = ModelOverrider.GetOverrideBehaviorName(m_RunModelBehaviorName);
+        }
+
     }
      private void FixedUpdate()
     {
-        if(SenseEnemy){
+    
+        ConfigureAgent();
+
+        if (SenseEnemy){
             m_AreaSetting.Reward_Get(-1f/m_AreaSetting.MaxEnvironmentSteps);
         }
 
@@ -58,7 +88,7 @@ public class ruby_runner : Agent
             m_navagent.isStopped=false;
             m_navagent.updatePosition=true;
             m_navagent.updateRotation=true;
-            m_navagent.SetDestination(m_AreaSetting.Doorlist[m_AreaSetting.goalIndex].transform.position+new Vector3(2.5f,0,0));
+            m_navagent.SetDestination(m_AreaSetting.Doorlist[m_AreaSetting.goalIndex].transform.position);
         }
         //Goal 찾기
         Detect();
@@ -128,6 +158,23 @@ public class ruby_runner : Agent
         }
 
     }
+
+    public void ConfigureAgent()
+    {
+        if (m_AreaSetting.train == ruby_AreaSetting.TrainBrain.DetectGoalBrain)
+        {
+            SetModel(m_DetectGoalBehaviorName, DetectGoal);
+        }
+        else if (m_AreaSetting.train == ruby_AreaSetting.TrainBrain.DetectRubyBrain)
+        {
+            SetModel(m_DetectRubyBehaviorName, DetectRuby);
+        }
+        else if (m_AreaSetting.train == ruby_AreaSetting.TrainBrain.RunBrain)
+        {
+            SetModel(m_RunModelBehaviorName, RunModel);
+        }
+    }
+
     public void MoveAgent(ActionSegment<int> act)
     {
         var dirToGo = Vector3.zero;
@@ -158,8 +205,11 @@ public class ruby_runner : Agent
         }
         
         transform.Rotate(rotateDir, Time.fixedDeltaTime * 200f);
-        m_AgentRb.AddForce(dirToGo * m_AreaSetting.agentRunSpeed,
+        if (!(m_AreaSetting.DetectGoal && hasruby))
+        {
+            m_AgentRb.AddForce(dirToGo * m_AreaSetting.agentRunSpeed,
             ForceMode.VelocityChange);
+        }
     }
 
     public override void OnActionReceived(ActionBuffers actions)
