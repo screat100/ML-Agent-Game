@@ -3854,7 +3854,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 5022602860645237092, guid: 65b525ff6c7461b4699c7bcdd485d943, type: 3}
+  m_Model: {fileID: 5022602860645237092, guid: c36dcab7ac070b648b1f238f0d52fb44, type: 3}
   m_InferenceDevice: 2
   m_BehaviorType: 0
   m_BehaviorName: PoliceBrain

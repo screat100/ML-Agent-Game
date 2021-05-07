@@ -25,8 +25,11 @@ public class CVR4_Area : MonoBehaviour
 
     [Header("Max Environment Steps")] public int MaxEnvironmentSteps ; // 50 (per 1 second)
 
-    public List<AgentInfo> chaserList;
-    public List<AgentInfo> runnerList;
+    public int chaserNum;
+    public int runnerNum;
+
+    List<AgentInfo> chaserList;
+    List<AgentInfo> runnerList;
 
     private SimpleMultiAgentGroup chaserGroup;
     private SimpleMultiAgentGroup runnerGroup;
@@ -45,6 +48,46 @@ public class CVR4_Area : MonoBehaviour
     {
         chaserGroup = new SimpleMultiAgentGroup();
         runnerGroup = new SimpleMultiAgentGroup();
+
+        chaserList = new List<AgentInfo>();
+        runnerList = new List<AgentInfo>();
+
+        for (int i = 0; i < chaserNum; i++)
+        {
+            GameObject agent = gameObject.transform.Find("Police (" + i + ")").gameObject;
+            if (agent == null)
+            {
+                Debug.Log($"police agent listed num : { i }");
+                break;
+            }
+
+            AgentInfo agentInfo = new AgentInfo();
+            agentInfo.agent = agent.GetComponent<CVR4_Agent>();
+            agentInfo.startPos = agent.transform.localPosition;
+            agentInfo.startRot = agent.transform.rotation;
+            agentInfo.rb = agent.GetComponent<Rigidbody>();
+
+            chaserList.Add(agentInfo);
+        }
+
+        for (int i = 0; i < runnerNum; i++)
+        {
+            GameObject agent = gameObject.transform.Find("Thief (" + i + ")").gameObject;
+            if (agent == null)
+            {
+                Debug.Log($"thief agent listed num : { i }");
+                break;
+            }
+
+            AgentInfo agentInfo = new AgentInfo();
+            agentInfo.agent = agent.GetComponent<CVR4_Agent>();
+            agentInfo.startPos = agent.transform.localPosition;
+            agentInfo.startRot = agent.transform.rotation;
+            agentInfo.rb = agent.GetComponent<Rigidbody>();
+
+            runnerList.Add(agentInfo);
+        }
+
 
         foreach (var item in chaserList)
         {
