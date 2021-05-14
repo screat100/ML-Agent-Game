@@ -127,8 +127,10 @@ public class ruby_AreaSetting : MonoBehaviour
         {
             chaserGroup.AddGroupReward(-willCatchNum);
             runnerGroup.AddGroupReward(1f);
+
             //runnerGroup.AddGroupReward(willCatchNum);
             runnerGroup.GroupEpisodeInterrupted();
+
             if(train!=TrainBrain.DetectGoalBrain&&train!=TrainBrain.DetectRubyBrain)
                 chaserGroup.GroupEpisodeInterrupted();
             ResetScene();

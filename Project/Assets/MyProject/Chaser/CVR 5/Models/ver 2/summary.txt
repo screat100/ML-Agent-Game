@@ -1,0 +1,2 @@
+- bool list observation에서 변수 하나를 true로 만들 때마다 reward 부여 (모든 변수를 true로 만들면 얻는 reward 총합은 1)
+- 추가된 리워드에 맞춰 시간패널티를 -1 더함

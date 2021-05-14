@@ -1,0 +1,2 @@
+- 기본 false, Area를 방문하면 true로 바뀌는 bool값 List
+  List를 police의 observation으로 제공함
