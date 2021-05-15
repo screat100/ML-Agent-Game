@@ -20,7 +20,7 @@ public class ruby_runner : Agent
     public NNModel RunModel;
 
     string m_DetectGoalBehaviorName = "DetectGoalBrain";
-    string m_DetectRubyBehaviorName = "DetectRubyBrain";
+    string m_DetectRubyBehaviorName = "rubyrun";
     string m_RunModelBehaviorName = "RunBrain";
 
     int m_Configuration;
@@ -79,9 +79,13 @@ public class ruby_runner : Agent
         if (SenseEnemy){
             m_AreaSetting.Reward_Get(-1f/m_AreaSetting.MaxEnvironmentSteps);
         }
-
-        if(m_AgentRb.velocity.magnitude > m_AreaSetting.agentRunSpeed*0.5f){
-            m_AreaSetting.Reward_Get(+1f/m_AreaSetting.MaxEnvironmentSteps);
+        
+        Vector3 current_velocity=transform.InverseTransformDirection(m_AgentRb.velocity);
+        if(current_velocity.z > m_AreaSetting.agentRunSpeed*0.5f){
+            AddReward(+1f/m_AreaSetting.MaxEnvironmentSteps);
+        }
+        else if(current_velocity.z < 0.0f){
+            AddReward(-1f/m_AreaSetting.MaxEnvironmentSteps);
         }
 
         if(m_AreaSetting.DetectGoal&&hasruby){

@@ -68,7 +68,7 @@ public class ruby_AreaSetting : MonoBehaviour
 
     [System.NonSerialized]
     public bool DetectGoal; //러너들이 골의 위치를 봤는가?
-    public rubytrigger ruby;
+    public List<rubytrigger> rubylist;
 
     public enum TrainBrain{
         DetectGoalBrain,
@@ -126,7 +126,8 @@ public class ruby_AreaSetting : MonoBehaviour
         if(m_ResetTimer > MaxEnvironmentSteps)
         {
             chaserGroup.AddGroupReward(-willCatchNum);
-            runnerGroup.AddGroupReward(1f);
+            if(TrainBrain.RunBrain==train)
+                runnerGroup.AddGroupReward(1f);
             //runnerGroup.AddGroupReward(willCatchNum);
             runnerGroup.GroupEpisodeInterrupted();
             if(train!=TrainBrain.DetectGoalBrain&&train!=TrainBrain.DetectRubyBrain)
@@ -234,11 +235,11 @@ public class ruby_AreaSetting : MonoBehaviour
         rubygoal=false;
         DetectGoal=false;
         gameObject.GetComponent<CapsuleCollider>().isTrigger=false;
-        Doorlist[goalIndex].GetComponent<ruby_goal>().Goal_reset();
         escapenum=0;
 
         if(train==TrainBrain.DetectGoalBrain)
         {
+            Doorlist[goalIndex].GetComponent<ruby_goal>().Goal_reset();
             RandomPlayerGet_ruby(); //랜덤한 플레이어 루비 흭득(Rubyrunner2 브레인용)
             random_goal();
         }
@@ -254,8 +255,12 @@ public class ruby_AreaSetting : MonoBehaviour
         스크립트에 삽입된 Sector들중, 랜덤으로 ruby위치 선정
     */
     {
-        int Randomindex=Random.Range(0,Sectors.Count);
-        ruby.resetPlace(Randomindex);
+        foreach(var item in rubylist)
+        {
+            int Randomindex=Random.Range(0,Sectors.Count);
+            item.resetPlace(Randomindex);
+        }
+        
     }
 
     public void RandomPos_player()
