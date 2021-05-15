@@ -126,10 +126,13 @@ public class ruby_AreaSetting : MonoBehaviour
         if(m_ResetTimer > MaxEnvironmentSteps)
         {
             chaserGroup.AddGroupReward(-willCatchNum);
+
             if(TrainBrain.RunBrain==train)
                 runnerGroup.AddGroupReward(1f);
+
             //runnerGroup.AddGroupReward(willCatchNum);
             runnerGroup.GroupEpisodeInterrupted();
+
             if(train!=TrainBrain.DetectGoalBrain&&train!=TrainBrain.DetectRubyBrain)
                 chaserGroup.GroupEpisodeInterrupted();
             ResetScene();
