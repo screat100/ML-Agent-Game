@@ -27,8 +27,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4414584429684312159}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0, y: 2, z: 0}
-  m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
+  m_LocalPosition: {x: -0, y: 3, z: 0}
+  m_LocalScale: {x: 0.75, y: 0.75, z: 0.75}
   m_Children: []
   m_Father: {fileID: 4606951862047975256}
   m_RootOrder: 11
@@ -3153,8 +3153,8 @@ MonoBehaviour:
     UseModelSpaceRotations: 0
     UseLocalSpaceTranslations: 1
     UseLocalSpaceRotations: 1
-    UseModelSpaceLinearVelocity: 1
-    UseLocalSpaceLinearVelocity: 0
+    UseModelSpaceLinearVelocity: 0
+    UseLocalSpaceLinearVelocity: 1
     UseJointPositionsAndAngles: 0
     UseJointForces: 0
   sensorName: RBSensor
@@ -3219,6 +3219,10 @@ MonoBehaviour:
   hasUpgradedFromAgentParameters: 1
   MaxStep: 0
   m_AreaSetting: {fileID: 0}
+  DetectGoal: {fileID: 0}
+  DetectRuby: {fileID: 5022602860645237092, guid: b95f3aa9bb9bcb54baf6a11da5e6033e,
+    type: 3}
+  RunModel: {fileID: 0}
   ruby: {fileID: 4414584429684312159}
   team: 1
   m_chaserlayermask:
