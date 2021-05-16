@@ -13,8 +13,7 @@ public class CVR5_Agent : Agent
     private Rigidbody m_AgentRb;
     BehaviorParameters m_behaviorParameters;
 
-    //Destinatnion observation
-    public GameObject Destination;
+
 
     public enum Team
     {
@@ -24,16 +23,7 @@ public class CVR5_Agent : Agent
 
     public Team team;
 
-    private void Start()
-    {
-        if (transform.tag == "thief")
-            Destination = null;
 
-        Destination.transform.localPosition = new Vector3(
-                Random.Range(m_AreaSetting.Leftup.transform.localPosition.x, m_AreaSetting.Rightdown.transform.localPosition.x),
-                0,
-                Random.Range(m_AreaSetting.Leftup.transform.localPosition.z, m_AreaSetting.Rightdown.transform.localPosition.z));
-    }
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -58,28 +48,29 @@ public class CVR5_Agent : Agent
         //        m_AreaSetting.NewAreaVisitReward();
         //    }
         //}
-        if (transform.tag == "police" &&
-            other.transform.GetInstanceID() == Destination.transform.GetInstanceID())
-        {
-            //other.gameObject.SetActive(false);
-            //m_AreaSetting.NewAreaVisitReward();
-
-            other.transform.localPosition = new Vector3(
-                Random.Range(m_AreaSetting.Leftup.transform.localPosition.x, m_AreaSetting.Rightdown.transform.localPosition.x),
-                0,
-                Random.Range(m_AreaSetting.Leftup.transform.localPosition.z, m_AreaSetting.Rightdown.transform.localPosition.z));
-            m_AreaSetting.DestinationReward();
-
-        }
+        //if (transform.tag == "police" &&
+        //    other.tag == "areaDetector")
+        //{
+        //    other.gameObject.SetActive(false);
+        //    m_AreaSetting.NewAreaVisitReward();
+        //}
     }
+
 
     private void FixedUpdate()
     {
+        float velocity = m_AgentRb.velocity.magnitude;
         // animation
-        if (m_AgentRb.velocity.magnitude > 0.05f)
+        if (velocity > 0.05f)
             gameObject.GetComponent<Animator>().SetBool("Run", true);
         else
             gameObject.GetComponent<Animator>().SetBool("Run", false);
+
+
+        if (velocity < 2.5f)
+            AddReward(-1.0f / m_AreaSetting.MaxEnvironmentSteps);
+
+        
     }
 
     public override void Initialize()
@@ -111,40 +102,25 @@ public class CVR5_Agent : Agent
                 dirToGo = transform.forward * 1f;
                 break;
             case 2:
-                dirToGo = transform.forward * -1f;
-                break;
-            case 3:
                 rotateDir = transform.up * 1f;
                 break;
-            case 4:
+            case 3:
                 rotateDir = transform.up * -1f;
                 break;
         }
         transform.Rotate(rotateDir, Time.fixedDeltaTime * 200f);
 
-        if (m_AgentRb.velocity.magnitude <= 5f)
+        if (m_AgentRb.velocity.magnitude <= 10f)
         {
             m_AgentRb.AddForce(dirToGo * m_AreaSetting.agentRunSpeed,
                 ForceMode.VelocityChange);
         }
     }
-    public override void CollectObservations(VectorSensor sensor)
-    {
-        //if(transform.tag == "police")
-        //{
-        //    for (int i = 0; i < m_AreaSetting.visited.Count; i++)
-        //    {
-        //        sensor.AddObservation(m_AreaSetting.visited[i]);
-        //    }
-        //}
-        if (transform.tag == "police")
-            sensor.AddObservation(Destination.transform.localPosition);
-    }
+
 
     public override void OnActionReceived(ActionBuffers actions)
     {
         MoveAgent(actions.DiscreteActions);
-        
     }
 
     public override void Heuristic(in ActionBuffers actionsOut)

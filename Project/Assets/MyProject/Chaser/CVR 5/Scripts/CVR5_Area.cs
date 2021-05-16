@@ -129,7 +129,7 @@ public class CVR5_Area : MonoBehaviour
         m_ResetTimer++;
 
         // time penalty & advantage
-        chaserGroup.AddGroupReward(-2.0f / MaxEnvironmentSteps);
+        chaserGroup.AddGroupReward(-1.0f / MaxEnvironmentSteps);
         runnerGroup.AddGroupReward(2.0f / MaxEnvironmentSteps);
 
         // Time Over => Runner win!
@@ -161,18 +161,19 @@ public class CVR5_Area : MonoBehaviour
 
     }
 
-    // pre-train!
+    //// pre-train!
     //public void NewAreaVisitReward()
     //{
     //    chaserGroup.AddGroupReward(1.0f / VisitCoinList.Length);
     //    CoinNum++;
 
-    //    //if(CoinNum == VisitCoinList.Length)
-    //    //{
-    //    //    runnerGroup.GroupEpisodeInterrupted();
-    //    //    ResetScene();
-    //    //}
+    //    if (CoinNum == VisitCoinList.Length)
+    //    {
+    //        runnerGroup.GroupEpisodeInterrupted();
+    //        ResetScene();
+    //    }
     //}
+
 
     public void DestinationReward()
     {
