@@ -3996,11 +3996,6 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 332810293874838981, guid: 3abffc47ef0ce3b43b1175bab9e35b85,
         type: 3}
-      propertyPath: DetectRuby
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 332810293874838981, guid: 3abffc47ef0ce3b43b1175bab9e35b85,
-        type: 3}
       propertyPath: m_AreaSetting
       value: 
       objectReference: {fileID: 5847075691167195152}

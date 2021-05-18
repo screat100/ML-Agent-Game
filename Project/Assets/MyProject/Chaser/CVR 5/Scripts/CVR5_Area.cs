@@ -34,8 +34,8 @@ public class CVR5_Area : MonoBehaviour
     //public int AreaNum;
     //public List<bool> visited;
 
-    //GameObject[] VisitCoinList;
-    //int CoinNum;
+    GameObject[] VisitCoinList;
+    int CoinNum;
 
 
     [Header("Default Agent Setting")]
@@ -64,8 +64,8 @@ public class CVR5_Area : MonoBehaviour
         //}
 
 
-        //VisitCoinList = GameObject.FindGameObjectsWithTag("areaDetector");
-        //CoinNum = 0;
+        VisitCoinList = GameObject.FindGameObjectsWithTag("areaDetector");
+        CoinNum = 0;
 
 
         /*
@@ -161,18 +161,18 @@ public class CVR5_Area : MonoBehaviour
 
     }
 
-    //// pre-train!
-    //public void NewAreaVisitReward()
-    //{
-    //    chaserGroup.AddGroupReward(1.0f / VisitCoinList.Length);
-    //    CoinNum++;
+    // pre-train!
+    public void NewAreaVisitReward()
+    {
+        chaserGroup.AddGroupReward(1.0f / VisitCoinList.Length);
+        CoinNum++;
 
-    //    if (CoinNum == VisitCoinList.Length)
-    //    {
-    //        runnerGroup.GroupEpisodeInterrupted();
-    //        ResetScene();
-    //    }
-    //}
+        //if (CoinNum == VisitCoinList.Length)
+        //{
+        //    runnerGroup.GroupEpisodeInterrupted();
+        //    ResetScene();
+        //}
+    }
 
 
     public void DestinationReward()
@@ -208,12 +208,12 @@ public class CVR5_Area : MonoBehaviour
             item.rb.angularVelocity = Vector3.zero;
         }
 
-        //// re-activate visit-coin
-        //for(int i=0; i<VisitCoinList.Length; i++) 
-        //{
-        //    VisitCoinList[i].SetActive(true);
-        //}
-        //CoinNum = 0;
+        // re-activate visit-coin
+        for (int i = 0; i < VisitCoinList.Length; i++)
+        {
+            VisitCoinList[i].SetActive(true);
+        }
+        CoinNum = 0;
 
         m_ResetTimer = 0;
         catchedRunnerNum = 0;

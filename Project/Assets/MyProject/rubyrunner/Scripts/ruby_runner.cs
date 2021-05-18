@@ -123,6 +123,7 @@ public class ruby_runner : Agent
             m_AgentRb.velocity=new Vector3(-m_AreaSetting.agentRunSpeed,0,m_AgentRb.velocity.z);
         }
     }
+
     void Detect()
     {
         //감지거리에 Goal 이 있을 때 다른 러너와 위치 공유

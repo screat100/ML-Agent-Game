@@ -608,12 +608,6 @@ PrefabInstance:
       propertyPath: agentRunSpeed
       value: 7.5
       objectReference: {fileID: 0}
-    - target: {fileID: 6672445046692353210, guid: 83927a7383ecbb642972500a0318e16e,
-        type: 3}
-      propertyPath: DetectRuby
-      value: 
-      objectReference: {fileID: 5022602860645237092, guid: b95f3aa9bb9bcb54baf6a11da5e6033e,
-        type: 3}
     - target: {fileID: 6759513945754875620, guid: 83927a7383ecbb642972500a0318e16e,
         type: 3}
       propertyPath: m_RootOrder

@@ -3180,7 +3180,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 0}
+  m_Model: {fileID: 5022602860645237092, guid: 76e4d20c797b79b4cb0f56106431800a, type: 3}
   m_InferenceDevice: 2
   m_BehaviorType: 0
   m_BehaviorName: rubyrun
@@ -3220,7 +3220,7 @@ MonoBehaviour:
   MaxStep: 0
   m_AreaSetting: {fileID: 0}
   DetectGoal: {fileID: 0}
-  DetectRuby: {fileID: 5022602860645237092, guid: b95f3aa9bb9bcb54baf6a11da5e6033e,
+  DetectRuby: {fileID: 5022602860645237092, guid: 76e4d20c797b79b4cb0f56106431800a,
     type: 3}
   RunModel: {fileID: 0}
   ruby: {fileID: 4414584429684312159}

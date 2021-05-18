@@ -48,29 +48,30 @@ public class CVR5_Agent : Agent
         //        m_AreaSetting.NewAreaVisitReward();
         //    }
         //}
-        //if (transform.tag == "police" &&
-        //    other.tag == "areaDetector")
-        //{
-        //    other.gameObject.SetActive(false);
-        //    m_AreaSetting.NewAreaVisitReward();
-        //}
+        if (transform.tag == "police" &&
+            other.tag == "areaDetector")
+        {
+            other.gameObject.SetActive(false);
+            m_AreaSetting.NewAreaVisitReward();
+        }
     }
-
 
     private void FixedUpdate()
     {
         float velocity = m_AgentRb.velocity.magnitude;
+        
         // animation
         if (velocity > 0.05f)
             gameObject.GetComponent<Animator>().SetBool("Run", true);
         else
             gameObject.GetComponent<Animator>().SetBool("Run", false);
 
-
-        if (velocity < 2.5f)
+        if (velocity < 0.75f)
             AddReward(-1.0f / m_AreaSetting.MaxEnvironmentSteps);
+        else
+            AddReward(1.0f / m_AreaSetting.MaxEnvironmentSteps);
 
-        
+
     }
 
     public override void Initialize()
@@ -95,25 +96,33 @@ public class CVR5_Agent : Agent
         var rotateDir = Vector3.zero;
 
         var action = act[0];
-
         switch (action)
         {
             case 1:
                 dirToGo = transform.forward * 1f;
                 break;
             case 2:
-                rotateDir = transform.up * 1f;
+                dirToGo = transform.forward * -1f;
                 break;
             case 3:
+                dirToGo = transform.right * -0.75f;
+                break;
+            case 4:
+                dirToGo = transform.right * 0.75f;
+                break;
+            case 5:
+                rotateDir = transform.up * 1f;
+                break;
+            case 6:
                 rotateDir = transform.up * -1f;
                 break;
         }
+
         transform.Rotate(rotateDir, Time.fixedDeltaTime * 200f);
 
         if (m_AgentRb.velocity.magnitude <= 10f)
         {
-            m_AgentRb.AddForce(dirToGo * m_AreaSetting.agentRunSpeed,
-                ForceMode.VelocityChange);
+            m_AgentRb.AddForce(dirToGo * m_AreaSetting.agentRunSpeed);
         }
     }
 
@@ -144,6 +153,15 @@ public class CVR5_Agent : Agent
         if (Input.GetKey(KeyCode.D))
         {
             discreteActionsOut[0] = 4;
+        }
+        //right
+        if (Input.GetKey(KeyCode.E))
+        {
+            discreteActionsOut[0] = 5;
+        }
+        if (Input.GetKey(KeyCode.Q))
+        {
+            discreteActionsOut[0] = 6;
         }
     }
 }
