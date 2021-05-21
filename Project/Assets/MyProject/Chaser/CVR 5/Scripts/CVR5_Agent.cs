@@ -9,7 +9,7 @@ using UnityEngine;
 public class CVR5_Agent : Agent
 {
     [SerializeField]
-    private CVR5_Area m_AreaSetting;
+    private ruby_AreaSetting m_AreaSetting;
     private Rigidbody m_AgentRb;
     BehaviorParameters m_behaviorParameters;
 
@@ -120,7 +120,7 @@ public class CVR5_Agent : Agent
 
         transform.Rotate(rotateDir, Time.fixedDeltaTime * 200f);
 
-        if (m_AgentRb.velocity.magnitude <= 10f)
+        if (m_AgentRb.velocity.magnitude <= m_AreaSetting.agentRunSpeed*0.95f)
         {
             m_AgentRb.AddForce(dirToGo * m_AreaSetting.agentRunSpeed);
         }

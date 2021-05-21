@@ -174,14 +174,6 @@ public class CVR5_Area : MonoBehaviour
         //}
     }
 
-
-    public void DestinationReward()
-    {
-        chaserGroup.AddGroupReward(0.05f);
-    }
-
-
-
     void ResetScene()
     {
         foreach (var item in chaserList)

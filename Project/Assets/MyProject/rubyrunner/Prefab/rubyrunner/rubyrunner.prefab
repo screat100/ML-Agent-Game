@@ -3042,7 +3042,7 @@ GameObject:
   - component: {fileID: 8504118373551809563}
   m_Layer: 0
   m_Name: rubyrunner
-  m_TagString: runner
+  m_TagString: thief
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3219,10 +3219,12 @@ MonoBehaviour:
   hasUpgradedFromAgentParameters: 1
   MaxStep: 0
   m_AreaSetting: {fileID: 0}
-  DetectGoal: {fileID: 0}
+  DetectGoal: {fileID: 5022602860645237092, guid: 9b20d0225018f984ab03027d2bc94e85,
+    type: 3}
   DetectRuby: {fileID: 5022602860645237092, guid: 76e4d20c797b79b4cb0f56106431800a,
     type: 3}
-  RunModel: {fileID: 0}
+  RunModel: {fileID: 5022602860645237092, guid: 56309d1ba802db64c8c984f3ec720572,
+    type: 3}
   ruby: {fileID: 4414584429684312159}
   team: 1
   m_chaserlayermask:
@@ -3245,8 +3247,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SensorName: RunnerRayPerceptionSensor
   m_DetectableTags:
-  - chaser
-  - runner
+  - police
+  - thief
   - goal
   - wall
   - key
@@ -3272,7 +3274,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 5
+  m_Speed: 7.5
   m_Acceleration: 5
   avoidancePriority: 50
   m_AngularSpeed: 120

@@ -106,15 +106,15 @@ NavMeshSettings:
   m_BuildSettings:
     serializedVersion: 2
     agentTypeID: 0
-    agentRadius: 0.5
+    agentRadius: 0.2
     agentHeight: 2
     agentSlope: 45
-    agentClimb: 0.4
+    agentClimb: 0.3
     ledgeDropHeight: 0
     maxJumpAcrossDistance: 0
     minRegionArea: 2
     manualCellSize: 0
-    cellSize: 0.16666667
+    cellSize: 0.06666667
     manualTileSize: 0
     tileSize: 256
     accuratePlacement: 0
@@ -208,7 +208,7 @@ PrefabInstance:
     - target: {fileID: 6759513945754875627, guid: 83927a7383ecbb642972500a0318e16e,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7222140603046377947, guid: 83927a7383ecbb642972500a0318e16e,
         type: 3}
@@ -302,7 +302,7 @@ PrefabInstance:
     - target: {fileID: 6759513945754875627, guid: 83927a7383ecbb642972500a0318e16e,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7222140603046377947, guid: 83927a7383ecbb642972500a0318e16e,
         type: 3}
@@ -396,7 +396,7 @@ PrefabInstance:
     - target: {fileID: 6759513945754875627, guid: 83927a7383ecbb642972500a0318e16e,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7222140603046377947, guid: 83927a7383ecbb642972500a0318e16e,
         type: 3}
@@ -588,6 +588,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 226779602891458455, guid: 83927a7383ecbb642972500a0318e16e,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 23.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1373386420838262969, guid: 83927a7383ecbb642972500a0318e16e,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 16.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3890313970087506135, guid: 83927a7383ecbb642972500a0318e16e,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 17
+      objectReference: {fileID: 0}
     - target: {fileID: 4341452241909712421, guid: 83927a7383ecbb642972500a0318e16e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -607,6 +622,11 @@ PrefabInstance:
         type: 3}
       propertyPath: agentRunSpeed
       value: 7.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6102567025806029013, guid: 83927a7383ecbb642972500a0318e16e,
+        type: 3}
+      propertyPath: m_TagString
+      value: door
       objectReference: {fileID: 0}
     - target: {fileID: 6759513945754875620, guid: 83927a7383ecbb642972500a0318e16e,
         type: 3}
@@ -673,5 +693,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 7804195524708964488, guid: 83927a7383ecbb642972500a0318e16e,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 43
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 7856346329362103889, guid: 83927a7383ecbb642972500a0318e16e, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 83927a7383ecbb642972500a0318e16e, type: 3}

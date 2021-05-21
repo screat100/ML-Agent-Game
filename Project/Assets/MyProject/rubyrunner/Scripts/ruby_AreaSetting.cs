@@ -8,7 +8,7 @@ public class ruby_AreaSetting : MonoBehaviour
     [System.Serializable]
     public class ChaserInfo
     {
-        public ruby_chaser agent;
+        public CVR5_Agent agent;
 
         [HideInInspector]
         public Vector3 startPos;
@@ -99,6 +99,11 @@ public class ruby_AreaSetting : MonoBehaviour
             runnerGroup.RegisterAgent(item.agent);
         }
 
+        //성재코드/////
+        VisitCoinList = GameObject.FindGameObjectsWithTag("areaDetector");
+        CoinNum = 0;
+        catchedRunnerNum = 0;
+        /////////////
         m_ResetTimer = 0;
         willCatchNum = runnerList.Count;
         ResetScene();
@@ -252,6 +257,14 @@ public class ruby_AreaSetting : MonoBehaviour
         }
         RandomPos_player(); //플레이어 랜덤 배치
         
+
+         // re-activate visit-coin
+        for (int i = 0; i < VisitCoinList.Length; i++)
+        {
+            VisitCoinList[i].SetActive(true);
+        }
+        catchedRunnerNum = 0;
+        CoinNum = 0;
     }
     public void RandomPos_ruby()
     /*  
@@ -314,4 +327,46 @@ public class ruby_AreaSetting : MonoBehaviour
         Doorlist[goalIndex].GetComponent<ruby_goal>().select_finishGoal();
     }
 
+ 
+
+
+    //////////////////////////////////////////////////////////////////////////////////
+    //성재코드
+    ///////////////////////////////////////////////////////////////////
+
+        // Runner가 잡힐 때마다 chaser 보상받음
+    // 반대로 runner는 처벌
+          GameObject[] VisitCoinList;
+    int CoinNum;
+    [HideInInspector]
+    public int catchedRunnerNum;
+    public void RunnerIsCatched()
+    {
+        catchedRunnerNum++;
+        willCatchNum--;
+        chaserGroup.AddGroupReward(2.0f / runnerList.Count);
+        runnerGroup.AddGroupReward(-2.0f / runnerList.Count);
+
+        // All runners are catched => chaser win!
+        if (catchedRunnerNum >= runnerList.Count)
+        {
+            runnerGroup.GroupEpisodeInterrupted();
+            chaserGroup.GroupEpisodeInterrupted();
+            ResetScene();
+        }
+
+    }
+
+    // pre-train!
+    public void NewAreaVisitReward()
+    {
+        chaserGroup.AddGroupReward(1.0f / VisitCoinList.Length);
+        CoinNum++;
+
+        //if (CoinNum == VisitCoinList.Length)
+        //{
+        //    runnerGroup.GroupEpisodeInterrupted();
+        //    ResetScene();
+        //}
+    }
 }

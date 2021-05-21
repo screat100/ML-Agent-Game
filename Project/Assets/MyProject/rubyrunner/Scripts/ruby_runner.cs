@@ -19,9 +19,9 @@ public class ruby_runner : Agent
     public NNModel DetectRuby;
     public NNModel RunModel;
 
-    string m_DetectGoalBehaviorName = "DetectGoalBrain";
+    string m_DetectGoalBehaviorName = "rubyrun";
     string m_DetectRubyBehaviorName = "rubyrun";
-    string m_RunModelBehaviorName = "RunBrain";
+    string m_RunModelBehaviorName = "rubyrun";
 
     int m_Configuration;
 
@@ -81,11 +81,11 @@ public class ruby_runner : Agent
         }
         
         Vector3 current_velocity=transform.InverseTransformDirection(m_AgentRb.velocity);
-        if(current_velocity.z > m_AreaSetting.agentRunSpeed*0.5f){
-            AddReward(+1f/m_AreaSetting.MaxEnvironmentSteps);
+        if(current_velocity.z > m_AreaSetting.agentRunSpeed*0.75f){
+            m_AreaSetting.Reward_Get(+1f/m_AreaSetting.MaxEnvironmentSteps);
         }
         else if(current_velocity.z < 0.0f){
-            AddReward(-1f/m_AreaSetting.MaxEnvironmentSteps);
+            m_AreaSetting.Reward_Get(-1f/m_AreaSetting.MaxEnvironmentSteps);
         }
 
         if(m_AreaSetting.DetectGoal&&hasruby){
@@ -98,7 +98,7 @@ public class ruby_runner : Agent
         Detect();
 
          // animation
-        if (m_AgentRb.velocity.magnitude > 0.05f)
+        if (m_AgentRb.velocity.magnitude > 0.1f)
             gameObject.GetComponent<Animator>().SetBool("Run", true);
         else
             gameObject.GetComponent<Animator>().SetBool("Run", false);
@@ -139,7 +139,7 @@ public class ruby_runner : Agent
                     if(Physics.Raycast(transform.position+Vector3.up, dir, out hit)){
                         if(hit.collider.tag=="goal"&&!m_AreaSetting.DetectGoal){
                             m_AreaSetting.DetectGoal=true;
-                            //m_AreaSetting.Reward_Get(0.5f);
+                            m_AreaSetting.Reward_Get(0.5f);
                         }
                     }
                 }
