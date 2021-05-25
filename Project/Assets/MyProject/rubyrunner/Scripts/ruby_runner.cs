@@ -73,13 +73,14 @@ public class ruby_runner : Agent
     }
      private void FixedUpdate()
     {
-    
         ConfigureAgent();
 
         if (SenseEnemy){
             m_AreaSetting.Reward_Get(-1f/m_AreaSetting.MaxEnvironmentSteps);
         }
         
+
+
         Vector3 current_velocity=transform.InverseTransformDirection(m_AgentRb.velocity);
         if(current_velocity.z > m_AreaSetting.agentRunSpeed*0.75f){
             m_AreaSetting.Reward_Get(+1f/m_AreaSetting.MaxEnvironmentSteps);
@@ -178,6 +179,20 @@ public class ruby_runner : Agent
         {
             SetModel(m_RunModelBehaviorName, RunModel);
         }
+        else if(m_AreaSetting.train==ruby_AreaSetting.TrainBrain.TotalBrain){
+            //적을 감지했다면 - 도망
+            if(SenseEnemy){
+                SetModel(m_RunModelBehaviorName, RunModel);
+            }
+            //루비를 찾지못했다면 - 루비를 찾는다
+            else if(!m_AreaSetting.findruby){
+                SetModel(m_DetectRubyBehaviorName, DetectRuby);
+            }
+            //루비를 찾았다면 - 탈출구를 찾는다.
+            else{
+                SetModel(m_DetectGoalBehaviorName, DetectGoal);
+            }
+        }
     }
 
     public void MoveAgent(ActionSegment<int> act)
@@ -238,6 +253,23 @@ public class ruby_runner : Agent
             sensor.AddObservation(SenseEnemy);
             sensor.AddObservation(transform.InverseTransformDirection(m_AgentRb.velocity));
             sensor.AddObservation(m_AreaSetting.DetectGoal); //필요없으므로 이후 벡터 사이즈 변경 가능 여부 확인
+        }
+        else if(m_AreaSetting.train==ruby_AreaSetting.TrainBrain.TotalBrain){
+            if(SenseEnemy){
+                sensor.AddObservation(SenseEnemy);
+                sensor.AddObservation(transform.InverseTransformDirection(m_AgentRb.velocity));
+                sensor.AddObservation(m_AreaSetting.DetectGoal);
+            }
+            else if(m_AreaSetting.findruby){
+                sensor.AddObservation(hasruby);
+                sensor.AddObservation(transform.InverseTransformDirection(m_AgentRb.velocity));
+                sensor.AddObservation(m_AreaSetting.DetectGoal);
+            }
+            else{
+                sensor.AddObservation(hasruby);
+                sensor.AddObservation(transform.InverseTransformDirection(m_AgentRb.velocity));
+                sensor.AddObservation(m_AreaSetting.DetectGoal);
+            }
         }
     }
 

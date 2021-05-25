@@ -73,7 +73,8 @@ public class ruby_AreaSetting : MonoBehaviour
     public enum TrainBrain{
         DetectGoalBrain,
         DetectRubyBrain,
-        RunBrain
+        RunBrain,
+        TotalBrain
     }
     public TrainBrain train;
     //루비만 찾는 브레인 학습
@@ -128,6 +129,8 @@ public class ruby_AreaSetting : MonoBehaviour
              runnerGroup.AddGroupReward(-1f/MaxEnvironmentSteps);
         }
 
+
+        //게임 진행
         if(m_ResetTimer > MaxEnvironmentSteps)
         {
             chaserGroup.AddGroupReward(-willCatchNum);
@@ -135,7 +138,6 @@ public class ruby_AreaSetting : MonoBehaviour
             if(TrainBrain.RunBrain==train)
                 runnerGroup.AddGroupReward(1f);
 
-            //runnerGroup.AddGroupReward(willCatchNum);
             runnerGroup.GroupEpisodeInterrupted();
 
             if(train!=TrainBrain.DetectGoalBrain&&train!=TrainBrain.DetectRubyBrain)
@@ -245,15 +247,18 @@ public class ruby_AreaSetting : MonoBehaviour
         gameObject.GetComponent<CapsuleCollider>().isTrigger=false;
         escapenum=0;
 
+        Doorlist[goalIndex].GetComponent<ruby_goal>().Goal_reset();
         if(train==TrainBrain.DetectGoalBrain)
         {
-            Doorlist[goalIndex].GetComponent<ruby_goal>().Goal_reset();
             RandomPlayerGet_ruby(); //랜덤한 플레이어 루비 흭득(Rubyrunner2 브레인용)
             random_goal();
         }
         else if(train==TrainBrain.DetectRubyBrain)
         {
             RandomPos_ruby(); //루비 위치 랜덤으로 활성화
+        }
+        else if(train==TrainBrain.TotalBrain){
+            RandomPos_ruby();
         }
         RandomPos_player(); //플레이어 랜덤 배치
         

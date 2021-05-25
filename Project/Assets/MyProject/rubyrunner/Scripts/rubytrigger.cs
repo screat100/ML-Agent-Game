@@ -21,11 +21,11 @@ public class rubytrigger : MonoBehaviour
         루비에 충돌 시, 해당 러너 루비 흭득
     */
     {
-        if(other.gameObject.tag=="runner")
+        if(other.gameObject.tag=="thief")
         {
             other.gameObject.GetComponent<ruby_runner>().hasruby=true;
             other.gameObject.GetComponent<ruby_runner>().ruby.SetActive(true);
-            //m_areaSetting.findruby=true;
+            m_areaSetting.findruby=true;
             for(int i=0;i<m_areaSetting.runnerList.Count;i++){
                 if(m_areaSetting.runnerList[i].rb==other.gameObject.GetComponent<Rigidbody>()){
                     m_areaSetting.key_player=i;
