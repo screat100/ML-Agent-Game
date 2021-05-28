@@ -18,6 +18,7 @@ public class Player : MonoBehaviour
     Animator m_Animator;
     Rigidbody m_Rigidbody;
     GameObject m_Camera;
+    StageSetting m_StageSetting;
 
     public Team team;
     public float movePower = 1.0f;
@@ -37,7 +38,7 @@ public class Player : MonoBehaviour
         m_Camera = transform.Find("Main Camera").gameObject;
 
         Cursor.visible = false;
-        //Cursor.lockState = CursorLockMode.Locked;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     void Update()
@@ -46,6 +47,23 @@ public class Player : MonoBehaviour
         MouseMove();
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (transform.tag == "police" && collision.transform.tag == "thief")
+        {
+            collision.gameObject.SetActive(false);
+            m_StageSetting.RunnerIsCatched();
+
+        }
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (transform.tag == "police" && other.tag == "areaDetector")
+        {
+            other.gameObject.SetActive(false);
+            m_StageSetting.NewAreaVisitReward();
+        }
+    }
 
     /*      ===         functions that run on Start()         === */
 
@@ -55,6 +73,8 @@ public class Player : MonoBehaviour
 
     void KeyboardMove()
     {
+        m_Rigidbody.velocity = Vector3.zero;
+
         float forwardMove = 0;
         float rightwardMove = 0;
 
@@ -83,24 +103,22 @@ public class Player : MonoBehaviour
             rightwardMove *= 1/Mathf.Sqrt(2);
         }
         
-        else if (forwardMove == 0 && rightwardMove == 0)
-        {
-            m_Rigidbody.velocity = Vector3.zero;
-        }
-
         //transform.position +=
         //    transform.forward * forwardMove * movePower
         //    + transform.right * rightwardMove * movePower;
 
-        m_Rigidbody.AddForce(transform.forward * forwardMove * movePower * Time.deltaTime);
-        m_Rigidbody.AddForce(transform.right * rightwardMove * movePower * Time.deltaTime);
+        if(m_Rigidbody.velocity.magnitude <= 10) 
+        {
+            m_Rigidbody.AddForce(transform.forward * forwardMove * movePower * Time.deltaTime);
+            m_Rigidbody.AddForce(transform.right * rightwardMove * movePower * Time.deltaTime);
+        }
 
     }
 
     void MouseMove()
     {
         AngleX += Input.GetAxis("Mouse X") * mouseSensitive;
-        AngleY += Input.GetAxis("Mouse Y") * mouseSensitive;
+        AngleY -= Input.GetAxis("Mouse Y") * mouseSensitive;
 
 
         // y축을 상하 90도(=180도)로 제한
