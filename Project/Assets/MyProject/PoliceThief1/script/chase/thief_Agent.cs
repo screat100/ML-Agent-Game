@@ -9,7 +9,7 @@ using UnityEngine;
 public class thief_Agent : Agent
 {
     [SerializeField]
-    private PoliceThief_Area m_AreaSetting;
+    //private PoliceThief_Area m_AreaSetting;
     private Rigidbody m_AgentRb;
     
     float speed;
@@ -27,7 +27,7 @@ public class thief_Agent : Agent
     public override void Initialize()
     {
         m_AgentRb = GetComponent<Rigidbody>();
-        speed=m_AreaSetting.agentRunSpeed*0.75f;
+        //speed=m_AreaSetting.agentRunSpeed*0.75f;
         m_behaviorParameters = gameObject.GetComponent<BehaviorParameters>();
 
         team = Team.Thief;

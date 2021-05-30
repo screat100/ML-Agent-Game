@@ -9,7 +9,7 @@ using UnityEngine;
 public class CVR5_Agent : Agent
 {
     [SerializeField]
-    private ruby_AreaSetting m_AreaSetting;
+    private CVR5_Area m_AreaSetting;
     private Rigidbody m_AgentRb;
     BehaviorParameters m_behaviorParameters;
 

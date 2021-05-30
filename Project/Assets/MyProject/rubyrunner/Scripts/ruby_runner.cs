@@ -19,9 +19,9 @@ public class ruby_runner : Agent
     public NNModel DetectRuby;
     public NNModel RunModel;
 
-    string m_DetectGoalBehaviorName = "rubyrun";
-    string m_DetectRubyBehaviorName = "rubyrun";
-    string m_RunModelBehaviorName = "rubyrun";
+    string m_DetectGoalBehaviorName = "rubyrun_DetectGoal";
+    string m_DetectRubyBehaviorName = "rubyrun_DetectRuby";
+    string m_RunModelBehaviorName = "rubyrun_RunModel";
 
     int m_Configuration;
 

@@ -141,7 +141,7 @@ public class ruby_AreaSetting : MonoBehaviour
             runnerGroup.GroupEpisodeInterrupted();
 
             if(train!=TrainBrain.DetectGoalBrain&&train!=TrainBrain.DetectRubyBrain)
-                chaserGroup.GroupEpisodeInterrupted();
+                //chaserGroup.GroupEpisodeInterrupted();
             ResetScene();
         }
 
@@ -341,7 +341,7 @@ public class ruby_AreaSetting : MonoBehaviour
 
         // Runner가 잡힐 때마다 chaser 보상받음
     // 반대로 runner는 처벌
-          GameObject[] VisitCoinList;
+    GameObject[] VisitCoinList;
     int CoinNum;
     [HideInInspector]
     public int catchedRunnerNum;
