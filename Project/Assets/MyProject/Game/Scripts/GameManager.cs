@@ -1,47 +1,46 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class GameManager : MonoBehaviour
+public static class GameManager
 {
+    /* ===      Sub Classes       === */
+    public enum Phase
+    {
+        menu,
+        selectTeam,
+        wait,
+        thiefOnly,
+        play,
+        result,
+    }
+
+
     /* ===      Variables       === */
-    public GameObject ui_MainMenu;
-    public GameObject ui_SelectTeam;
-    public GameObject ui_playing;
-    public GameObject ui_result;
+
+    public static Phase phase;
+
+    public static GameObject ui_MainMenu = GameObject.Find("UI_MainMenu");
+    public static GameObject ui_SelectTeam= GameObject.Find("UI_SelectTeam");
+    public static GameObject ui_playing= GameObject.Find("UI_Playing");
+    public static GameObject ui_result= GameObject.Find("UI_Result");
+    
+    public static Text watingTimeText = GameObject.Find("text_waitingTime").GetComponent<Text>();
+    public static Text playingTimeText = GameObject.Find("text_playingTime").GetComponent<Text>();
+
+    public static Player m_Player = GameObject.Find("Player").GetComponent<Player>();
+
+    public static int PoliceNum;
+    public static int ThiefNum;
+
+    public static bool flowWatingTime = false;
+    public static float watingTime = 0f;
+    public static bool flowPlayingTime = false;
+    public static float playingTime = 0f;
+
+
 
     
-
-    public float time;
-    float maxPlayTime = 300;
-    public bool timeFlow = false;
-
-
-    /* ===      base functions       === */
-    void Start()
-    {
-        //ui_MainMenu.SetActive(true);
-        
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.None;
-
-        time = 0;
-        
-    }
-
-    void Update()
-    {
-        if(timeFlow) 
-        {
-            time += Time.deltaTime;
-
-            if(time >= maxPlayTime) 
-            {
-                Debug.Log("Time Over !");
-            }
-        }
-    }
-
     
-    /* ===      dd       === */
 }

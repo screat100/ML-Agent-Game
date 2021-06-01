@@ -24,7 +24,6 @@ public class rubytrigger : MonoBehaviour
         if(other.gameObject.tag=="thief")
         {
             other.gameObject.GetComponent<ruby_runner>().hasruby=true;
-            other.gameObject.GetComponent<ruby_runner>().ruby.SetActive(true);
             m_areaSetting.findruby=true;
             for(int i=0;i<m_areaSetting.runnerList.Count;i++){
                 if(m_areaSetting.runnerList[i].rb==other.gameObject.GetComponent<Rigidbody>()){

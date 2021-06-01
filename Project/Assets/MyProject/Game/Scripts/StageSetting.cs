@@ -49,6 +49,9 @@ public class StageSetting : MonoBehaviour
 
     [Header("Max Environment Steps")] public int MaxEnvironmentSteps = 30000; // 50 (per 1 second)
 
+    public GameObject[] policeAgents;
+    public GameObject[] thiefAgents;
+
     // 각 팀의 유닛들(에이전트+플레이어)을 리스트로 저장, 씬 리셋 시 활용
     public List<PoliceInfo> policeList;             
     public List<ThiefInfo> runnerList;              
@@ -93,7 +96,6 @@ public class StageSetting : MonoBehaviour
 
         /* ===      Find Police Agents and Register to Team Agent Group     ===  */
 
-        GameObject[] policeAgents = GameObject.FindGameObjectsWithTag("police");
         for (int i = 0; i < policeAgents.Length; i++)
         {
             GameObject agent = policeAgents[i];
@@ -119,10 +121,9 @@ public class StageSetting : MonoBehaviour
 
         /* ===      Find Thief Agents and Register to Team Agent Group     ===  */
 
-        GameObject[] thiefAgent = GameObject.FindGameObjectsWithTag("thief");
-        for (int i = 0; i < thiefAgent.Length; i++)
+        for (int i = 0; i < thiefAgents.Length; i++)
         {
-            GameObject agent = thiefAgent[i];
+            GameObject agent = thiefAgents[i];
 
             ThiefInfo agentInfo = new ThiefInfo();
             agentInfo.agent = agent.GetComponent<ruby_runner>();
@@ -150,7 +151,6 @@ public class StageSetting : MonoBehaviour
         /* ===      Set Default Environment     ===  */
         m_ResetTimer = 0;
         willCatchNum = runnerList.Count;
-        //rubygoal = false;
         ResetScene();
     }
 
@@ -197,6 +197,37 @@ public class StageSetting : MonoBehaviour
 
 
     /* ===      Externally executed functions      ===  */
+
+    public void ResetAgentsNum()
+    {
+        // police
+        for(int i=0; i<3; i++)
+        {
+            if(i <GameManager.PoliceNum)
+            {
+                policeAgents[i].SetActive(true);
+            }
+            else 
+            {
+                policeAgents[i].SetActive(false);
+            }
+        }
+
+        // thief
+        for(int i=0; i<8; i++) 
+        { 
+            if(i <GameManager.ThiefNum)
+            {
+                thiefAgents[i].SetActive(true);
+            }
+            else 
+            {
+                thiefAgents[i].SetActive(false);
+            }
+
+        }
+    }
+
 
     // round 종료 후 scene을 초기화
     void ResetScene()

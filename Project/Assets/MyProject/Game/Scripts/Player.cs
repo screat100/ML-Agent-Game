@@ -8,12 +8,13 @@ public class Player : MonoBehaviour
 
     public enum Team
     {
-        police,
-        thief,
+        police = 0,
+        thief = 1,
     }
 
 
     /*      ===         variables         === */
+
 
     Animator m_Animator;
     Rigidbody m_Rigidbody;
@@ -22,7 +23,11 @@ public class Player : MonoBehaviour
 
     public Team team;
     public float movePower = 1.0f;
+    public GameObject lightOfPolice;
+    public GameObject lightOfThief;
 
+    // related control
+    public bool controllActivate;
     float AngleX;
     float AngleY;
     [Range(0.1f, 10.0f)] public float mouseSensitive = 1.0f;
@@ -43,8 +48,11 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        KeyboardMove();
-        MouseMove();
+        if(controllActivate)
+        {
+            KeyboardMove();
+            MouseMove();
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -135,4 +143,21 @@ public class Player : MonoBehaviour
 
 
 
+    /*      ===         Externally executed functions         === */
+
+    public void TurnOnSpotLight()
+    {
+        switch(team)
+        {
+        case Team.police:
+            lightOfPolice.SetActive(true);
+            lightOfThief.SetActive(false);
+            break;
+        
+        case Team.thief:
+            lightOfThief.SetActive(true);
+            lightOfPolice.SetActive(false);
+            break;
+        }
+    }
 }
