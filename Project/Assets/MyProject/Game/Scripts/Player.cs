@@ -37,8 +37,8 @@ public class Player : MonoBehaviour
         m_Rigidbody = gameObject.GetComponent<Rigidbody>();
         m_Camera = transform.Find("Main Camera").gameObject;
 
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
+        // Cursor.visible = false;
+        // Cursor.lockState = CursorLockMode.Locked;
     }
 
     void Update()
