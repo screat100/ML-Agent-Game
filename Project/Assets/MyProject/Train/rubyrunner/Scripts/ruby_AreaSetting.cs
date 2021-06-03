@@ -235,7 +235,6 @@ public class ruby_AreaSetting : MonoBehaviour
             item.rb.velocity = Vector3.zero;
             item.rb.angularVelocity = Vector3.zero;
             item.agent.hasruby=false;
-            item.agent.ruby.SetActive(false);
             item.agent.m_navagent.ResetPath();
         }
 
@@ -321,7 +320,6 @@ public class ruby_AreaSetting : MonoBehaviour
         findruby=true;
         
         runnerList[Randomindex].agent.GetComponent<ruby_runner>().hasruby=true;
-        runnerList[Randomindex].agent.GetComponent<ruby_runner>().ruby.SetActive(true);
     }
     public void random_goal()
     /*  

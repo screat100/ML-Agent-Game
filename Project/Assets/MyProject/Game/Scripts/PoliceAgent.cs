@@ -22,7 +22,7 @@ public class PoliceAgent : Agent
         if (collision.transform.tag == "thief")
         {
             collision.gameObject.SetActive(false);
-            m_AreaSetting.RunnerIsCatched();
+            m_AreaSetting.GetReward_police();
 
         }
     }

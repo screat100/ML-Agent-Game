@@ -53,8 +53,8 @@ public class StageSetting : MonoBehaviour
     public GameObject[] thiefAgents;
 
     // 각 팀의 유닛들(에이전트+플레이어)을 리스트로 저장, 씬 리셋 시 활용
-    public List<PoliceInfo> policeList;             
-    public List<ThiefInfo> runnerList;              
+    public List<PoliceInfo> policeList = new List<PoliceInfo>();         
+    public List<ThiefInfo> runnerList = new List<ThiefInfo>();            
 
     // 에이전트 그룹 => 그룹 보상으로 학습
     private SimpleMultiAgentGroup chaserGroup;
@@ -90,60 +90,11 @@ public class StageSetting : MonoBehaviour
 
     void Start()
     {
-
-        chaserGroup = new SimpleMultiAgentGroup();
-        runnerGroup = new SimpleMultiAgentGroup();
-
-        /* ===      Find Police Agents and Register to Team Agent Group     ===  */
-
-        for (int i = 0; i < policeAgents.Length; i++)
-        {
-            GameObject agent = policeAgents[i];
-
-            PoliceInfo agentInfo = new PoliceInfo();
-            agentInfo.agent = agent.GetComponent<PoliceAgent>();
-            agentInfo.startPos = agent.transform.localPosition;
-            agentInfo.startRot = agent.transform.rotation;
-            agentInfo.rb = agent.GetComponent<Rigidbody>();
-
-            policeList.Add(agentInfo);
-        }
-
-        foreach (var item in policeList)
-        {
-            item.startPos = item.agent.transform.localPosition;
-            item.startRot = item.agent.transform.localRotation;
-            item.rb = item.agent.GetComponent<Rigidbody>();
-            chaserGroup.RegisterAgent(item.agent);
-        }
-
-
-
-        /* ===      Find Thief Agents and Register to Team Agent Group     ===  */
-
-        for (int i = 0; i < thiefAgents.Length; i++)
-        {
-            GameObject agent = thiefAgents[i];
-
-            ThiefInfo agentInfo = new ThiefInfo();
-            agentInfo.agent = agent.GetComponent<ruby_runner>();
-            agentInfo.startPos = agent.transform.localPosition;
-            agentInfo.startRot = agent.transform.rotation;
-            agentInfo.rb = agent.GetComponent<Rigidbody>();
-
-            runnerList.Add(agentInfo);
-        }
-
-        foreach (var item in runnerList)
-        {
-            item.startPos = item.agent.transform.localPosition;
-            item.startRot = item.agent.transform.localRotation;
-            item.rb = item.agent.GetComponent<Rigidbody>();
-            runnerGroup.RegisterAgent(item.agent);
-        }
+        GameManager.stage = 0;
+        GameManager.winNum_Police = 0;
+        GameManager.winNum_Thief = 0;
 
         /* ===      Initiate variables for police team    ===  */
-
         visitCoinList = GameObject.FindGameObjectsWithTag("areaDetector");
         coinNum = 0;
         catchedRunnerNum = 0;
@@ -156,9 +107,13 @@ public class StageSetting : MonoBehaviour
 
     void FixedUpdate()
     {
+        if(!GameManager.flowPlayingTime)
+            return;
+
+
         m_ResetTimer++;
 
-        //Thief 중 한 명이 RaySensor를 통해 Goal(탈출구)를 발견하면 CapsuleCollider를 true로 만듦
+        // Thief 중 한 명이 RaySensor를 통해 Goal(탈출구)를 발견하면 CapsuleCollider를 true로 만듦
         if (gameObject.GetComponent<CapsuleCollider>().isTrigger == true && !DetectGoal)
         {
             runnerGroup.AddGroupReward(1f);
@@ -192,19 +147,29 @@ public class StageSetting : MonoBehaviour
             ResetScene();
         }
 
+        
+
     }
 
 
 
     /* ===      Externally executed functions      ===  */
 
-    public void ResetAgentsNum()
+    // 매치를 처음 시작할 때 한 번만 실행
+    public void ResetInitialInformation()
     {
-        // police
+        // reset Game Data 
+        GameManager.stage = 0;
+        GameManager.winNum_Police = 0;
+        GameManager.winNum_Thief = 0;
+
+
+        // reset each agents num (follow setting)
         for(int i=0; i<3; i++)
         {
             if(i <GameManager.PoliceNum)
             {
+                policeAgents[i].SetActive(false);
                 policeAgents[i].SetActive(true);
             }
             else 
@@ -213,8 +178,7 @@ public class StageSetting : MonoBehaviour
             }
         }
 
-        // thief
-        for(int i=0; i<8; i++) 
+        for(int i=0; i<6; i++) 
         { 
             if(i <GameManager.ThiefNum)
             {
@@ -226,12 +190,78 @@ public class StageSetting : MonoBehaviour
             }
 
         }
+
+        // save agents initial inform to use when reset stage(change round)
+        if(policeList.Count != 0)
+            policeList.Clear();
+
+        if(runnerList.Count != 0)
+            runnerList.Clear();
+
+        chaserGroup = new SimpleMultiAgentGroup();
+        runnerGroup = new SimpleMultiAgentGroup();
+
+        for (int i = 0; i < GameManager.PoliceNum; i++)
+        {
+            GameObject agent = policeAgents[i];
+
+            PoliceInfo agentInfo = new PoliceInfo();
+            agentInfo.agent = agent.GetComponent<PoliceAgent>();
+            agentInfo.startPos = agent.transform.localPosition;
+            agentInfo.startRot = agent.transform.rotation;
+            agentInfo.rb = agent.GetComponent<Rigidbody>();
+
+            policeList.Add(agentInfo);
+        }
+
+        for (int i = 0; i < thiefAgents.Length; i++)
+        {
+            GameObject agent = thiefAgents[i];
+
+            ThiefInfo agentInfo = new ThiefInfo();
+            agentInfo.agent = agent.GetComponent<ruby_runner>();
+            agentInfo.startPos = agent.transform.localPosition;
+            agentInfo.startRot = agent.transform.rotation;
+            agentInfo.rb = agent.GetComponent<Rigidbody>();
+
+            runnerList.Add(agentInfo);
+        }
+
+
+        // register to agents group
+        foreach (var item in policeList)
+        {
+            item.startPos = item.agent.transform.localPosition;
+            item.startRot = item.agent.transform.localRotation;
+            item.rb = item.agent.GetComponent<Rigidbody>();
+            chaserGroup.RegisterAgent(item.agent);
+        }
+
+        foreach (var item in runnerList)
+        {
+            item.startPos = item.agent.transform.localPosition;
+            item.startRot = item.agent.transform.localRotation;
+            item.rb = item.agent.GetComponent<Rigidbody>();
+            runnerGroup.RegisterAgent(item.agent);
+        }
+
+        // Initiate variables for police team 
+        visitCoinList = GameObject.FindGameObjectsWithTag("areaDetector");
+        coinNum = 0;
+        catchedRunnerNum = 0;
+
+        // Set Default Environment  
+        m_ResetTimer = 0;
+        willCatchNum = runnerList.Count;
+        ResetScene();
     }
 
 
-    // round 종료 후 scene을 초기화
+    // round 종료 후 scene을 초기화.
+    // 매 라운드 종료 시마다 실행
     void ResetScene()
     {
+        // reset agents' transform
         foreach (var item in policeList)
         {
             item.agent.transform.localPosition = item.startPos;
@@ -252,21 +282,24 @@ public class StageSetting : MonoBehaviour
             item.rb.velocity = Vector3.zero;
             item.rb.angularVelocity = Vector3.zero;
             item.agent.hasruby = false;
-            item.agent.ruby.SetActive(false);
             item.agent.m_navagent.ResetPath();
         }
 
-
+        // reset variables of environment 
         m_ResetTimer = 0;
         willCatchNum = runnerList.Count;
-        //rubygoal = false;
 
+        catchedRunnerNum = 0;
+        coinNum = 0;
+
+        findruby = false;
         DetectGoal = false;
         gameObject.GetComponent<CapsuleCollider>().isTrigger = false;
         escapenum = 0;
 
         Doorlist[goalIndex].GetComponent<ruby_goal>().Goal_reset();
 
+        // reset objects' transform of envirionment
         if (train == TrainBrain.DetectGoalBrain)
         {
             random_goal();
@@ -284,13 +317,11 @@ public class StageSetting : MonoBehaviour
 
 
 
-        // re-activate visit-coin
+        // reset(activate) visit-coin 
         for (int i = 0; i < visitCoinList.Length; i++)
         {
             visitCoinList[i].SetActive(true);
         }
-        catchedRunnerNum = 0;
-        coinNum = 0;
     }
 
     // 루비를 얻으면 thief에게 보상을 주는 함수 (외부에서 실행)
@@ -307,14 +338,14 @@ public class StageSetting : MonoBehaviour
 
 
     // 루비를 얻으면 thief에게 보상을 주는 함수 (외부에서 실행)
-    public void Reward_Get(float index)
+    public void Reward_Get(float reward)
     {
-        runnerGroup.AddGroupReward(index);
+        runnerGroup.AddGroupReward(reward);
     }
 
     // goal에 도달했을 때 (=탈출 성공) 실행하는 함수
     // * m_agent : ruby를 가진 agent인지 확인하기 위한 parameter
-    public void Scored(GameObject m_agent)
+    public void ScoredThief(GameObject m_agent)
     {
         bool flag = m_agent.GetComponent<ruby_runner>().hasruby;
 
@@ -322,13 +353,15 @@ public class StageSetting : MonoBehaviour
 
         if (flag)
         {
-            //rubygoal = true;
             runnerGroup.AddGroupReward(0.5f);
             runnerGroup.GroupEpisodeInterrupted();
 
             if (train != TrainBrain.DetectGoalBrain)
                 chaserGroup.GroupEpisodeInterrupted();
+
             ResetScene();
+            GameManager.recentWinner = Player.Team.thief;
+            GameObject.Find("@UIController").GetComponent<UIController>().ChangePhaseToResult();
         }
 
     }
@@ -349,7 +382,7 @@ public class StageSetting : MonoBehaviour
 
 
     // Runner가 잡혔을 때 실행
-    public void RunnerIsCatched()
+    public void GetReward_police()
     {
         catchedRunnerNum++;
         willCatchNum--;

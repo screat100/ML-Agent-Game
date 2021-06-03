@@ -5,7 +5,7 @@ using UnityEngine;
 public class ruby_goal : MonoBehaviour
 {
     [SerializeField]
-    ruby_AreaSetting m_areaSetting;
+    StageSetting m_areaSetting;
 
     [System.NonSerialized]
     public bool flagGoal;// Goal 이 활성화가 됐는가?
@@ -19,16 +19,17 @@ public class ruby_goal : MonoBehaviour
         flagGoal=false;
         m_leftrender=transform.GetChild(0).GetComponent<MeshRenderer>();
         m_rightrender=transform.GetChild(1).GetComponent<MeshRenderer>();
+        m_areaSetting=GameObject.Find("GameArea").GetComponent<StageSetting>();
          m_leftrender.material=OffMaterial;
          m_rightrender.material=OffMaterial;
     }
     private void OnCollisionEnter(Collision other)
     {
 
-        if(other.gameObject.tag == "thief"&&m_areaSetting.findruby&&flagGoal&other.gameObject.GetComponent<ruby_runner>().hasruby)
+        if(other.gameObject.tag == "thief"&&m_areaSetting.findruby&&flagGoal&&other.gameObject.GetComponent<ruby_runner>().hasruby)
         {
             other.gameObject.SetActive(false);
-            m_areaSetting.Scored(other.gameObject, false); 
+            m_areaSetting.ScoredThief(other.gameObject); 
         }
     }
     public void select_finishGoal()

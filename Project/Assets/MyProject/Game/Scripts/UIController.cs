@@ -5,12 +5,18 @@ using UnityEngine.UI;
 
 public class UIController : MonoBehaviour
 {
+    StageSetting m_StageSetting;
+
 
     /* ===      base functions       === */
     void Start() 
     {
+        m_StageSetting = GameObject.Find("GameArea").GetComponent<StageSetting>();
+
         ChangePhaseToMenu();
 
+        GameManager.PoliceNum = 2;
+        GameManager.ThiefNum = 4;
     }
 
     void Update()
@@ -65,6 +71,7 @@ public class UIController : MonoBehaviour
     {
         GameManager.phase = GameManager.Phase.menu;
         GameManager.ui_MainMenu.SetActive(true);
+        GameManager.ui_Setting.SetActive(false);
         GameManager.ui_SelectTeam.SetActive(false);
         GameManager.ui_playing.SetActive(false);
         GameManager.ui_result.SetActive(false);
@@ -108,6 +115,9 @@ public class UIController : MonoBehaviour
 
         GameManager.watingTimeText.gameObject.SetActive(true);
         GameManager.playingTimeText.gameObject.SetActive(false);
+
+        // Initialization
+        m_StageSetting.ResetInitialInformation();
     }
 
     public void ChangePhaseToThiefOnly() 
@@ -140,6 +150,7 @@ public class UIController : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
     }
 
+    /* ===      button functions       === */
     public void ExitProgram()
     {
 #if UNITY_EDITOR
@@ -148,4 +159,52 @@ public class UIController : MonoBehaviour
         Application.Quit(); // 어플리케이션 종료
 #endif
     }
+
+    public void GoToSetting()
+    {
+        GameManager.ui_MainMenu.SetActive(false);
+        GameManager.ui_Setting.SetActive(true);
+    }
+
+    public void AddPoliceNum(bool isPlus)
+    {
+        if(isPlus)
+        {
+            if(GameManager.PoliceNum < 3)
+                GameManager.PoliceNum++;
+
+        }
+        else 
+        {
+            if(GameManager.PoliceNum > 2)
+                GameManager.PoliceNum--;
+        }
+
+        refreshMemberNumText();
+
+    }
+    public void AddThiefNum(bool isPlus)
+    {
+        if(isPlus)
+        {
+            if(GameManager.ThiefNum < 6)
+                GameManager.ThiefNum++;
+
+        }
+        else 
+        {
+            if(GameManager.ThiefNum > 4)
+                GameManager.ThiefNum--;
+        }
+
+        refreshMemberNumText();
+    }
+
+    private void refreshMemberNumText()
+    {
+        GameManager.text_policeNum.GetComponent<Text>().text = GameManager.PoliceNum.ToString();
+        GameManager.text_thiefNum.GetComponent<Text>().text = GameManager.ThiefNum.ToString();
+    }
+
+
 }

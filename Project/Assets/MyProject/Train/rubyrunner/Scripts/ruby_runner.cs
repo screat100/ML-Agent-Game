@@ -12,7 +12,7 @@ using Unity.MLAgentsExamples;
 public class ruby_runner : Agent
 {
     [SerializeField]
-    private ruby_AreaSetting m_AreaSetting;
+    private StageSetting m_AreaSetting;
     private Rigidbody m_AgentRb;
 
     public NNModel DetectGoal;
@@ -30,7 +30,6 @@ public class ruby_runner : Agent
 
     BehaviorParameters m_behaviorParameters;
     private bool SenseEnemy;
-    public GameObject ruby;
     public enum Team
     {
         Chaser = 0,
@@ -48,7 +47,8 @@ public class ruby_runner : Agent
         m_AgentRb = GetComponent<Rigidbody>();
         m_navagent = GetComponent<NavMeshAgent>();
         m_behaviorParameters = gameObject.GetComponent<BehaviorParameters>();
-         if (m_behaviorParameters.TeamId == (int)Team.Chaser)
+        
+        if (m_behaviorParameters.TeamId == (int)Team.Chaser)
         {
             team = Team.Chaser;
         }
@@ -128,7 +128,7 @@ public class ruby_runner : Agent
     void Detect()
     {
         //감지거리에 Goal 이 있을 때 다른 러너와 위치 공유
-        Collider[] Goals=Physics.OverlapSphere(transform.position,m_AreaSetting.RunnerDetectRadius,m_Goallayermask);
+        Collider[] Goals=Physics.OverlapSphere(transform.position,m_AreaSetting.runnerDetectRadius,m_Goallayermask);
 
         if(Goals.Length>0){
                 Vector3 dir=(Goals[0].transform.position-transform.position).normalized;
@@ -150,7 +150,7 @@ public class ruby_runner : Agent
         SenseEnemy=false;
         
 
-        Collider[] Enemys=Physics.OverlapSphere(transform.position,m_AreaSetting.RunnerDetectRadius, m_chaserlayermask);
+        Collider[] Enemys=Physics.OverlapSphere(transform.position,m_AreaSetting.runnerDetectRadius, m_chaserlayermask);
 
         if(Enemys.Length>0){
             SenseEnemy=true;
@@ -167,19 +167,20 @@ public class ruby_runner : Agent
 
     public void ConfigureAgent()
     {
-        if (m_AreaSetting.train == ruby_AreaSetting.TrainBrain.DetectGoalBrain)
+        if (m_AreaSetting.train == StageSetting.TrainBrain.DetectGoalBrain)
         {
             SetModel(m_DetectGoalBehaviorName, DetectGoal);
         }
-        else if (m_AreaSetting.train == ruby_AreaSetting.TrainBrain.DetectRubyBrain)
+        else if (m_AreaSetting.train == StageSetting.TrainBrain.DetectRubyBrain)
         {
             SetModel(m_DetectRubyBehaviorName, DetectRuby);
         }
-        else if (m_AreaSetting.train == ruby_AreaSetting.TrainBrain.RunBrain)
+        else if (m_AreaSetting.train == StageSetting.TrainBrain.RunBrain)
         {
             SetModel(m_RunModelBehaviorName, RunModel);
         }
-        else if(m_AreaSetting.train==ruby_AreaSetting.TrainBrain.TotalBrain){
+        else if(m_AreaSetting.train==StageSetting.TrainBrain.TotalBrain){
+            Debug.Log(m_AreaSetting.findruby);
             //적을 감지했다면 - 도망
             if(SenseEnemy){
                 SetModel(m_RunModelBehaviorName, RunModel);
@@ -239,22 +240,22 @@ public class ruby_runner : Agent
 
     public override void CollectObservations(VectorSensor sensor)
     {
-        if(m_AreaSetting.train==ruby_AreaSetting.TrainBrain.DetectRubyBrain){
+        if(m_AreaSetting.train==StageSetting.TrainBrain.DetectRubyBrain){
             sensor.AddObservation(hasruby); //필요없으므로 이후 SenseEnemy로 교체 또는 벡터 사이즈 변경 가능 여부 확인할예정
             sensor.AddObservation(transform.InverseTransformDirection(m_AgentRb.velocity));
             sensor.AddObservation(m_AreaSetting.DetectGoal);
         }
-        else if(m_AreaSetting.train==ruby_AreaSetting.TrainBrain.DetectGoalBrain){
+        else if(m_AreaSetting.train==StageSetting.TrainBrain.DetectGoalBrain){
             sensor.AddObservation(hasruby);
             sensor.AddObservation(transform.InverseTransformDirection(m_AgentRb.velocity));
             sensor.AddObservation(m_AreaSetting.DetectGoal);
         }
-        else if(m_AreaSetting.train==ruby_AreaSetting.TrainBrain.RunBrain){
+        else if(m_AreaSetting.train==StageSetting.TrainBrain.RunBrain){
             sensor.AddObservation(SenseEnemy);
             sensor.AddObservation(transform.InverseTransformDirection(m_AgentRb.velocity));
             sensor.AddObservation(m_AreaSetting.DetectGoal); //필요없으므로 이후 벡터 사이즈 변경 가능 여부 확인
         }
-        else if(m_AreaSetting.train==ruby_AreaSetting.TrainBrain.TotalBrain){
+        else if(m_AreaSetting.train==StageSetting.TrainBrain.TotalBrain){
             if(SenseEnemy){
                 sensor.AddObservation(SenseEnemy);
                 sensor.AddObservation(transform.InverseTransformDirection(m_AgentRb.velocity));

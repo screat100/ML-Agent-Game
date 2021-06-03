@@ -42,8 +42,7 @@ public class Player : MonoBehaviour
         m_Rigidbody = gameObject.GetComponent<Rigidbody>();
         m_Camera = transform.Find("Main Camera").gameObject;
 
-        // Cursor.visible = false;
-        // Cursor.lockState = CursorLockMode.Locked;
+        m_StageSetting = GameObject.Find("GameArea").GetComponent<StageSetting>();
     }
 
     void Update()
@@ -60,8 +59,7 @@ public class Player : MonoBehaviour
         if (transform.tag == "police" && collision.transform.tag == "thief")
         {
             collision.gameObject.SetActive(false);
-            m_StageSetting.RunnerIsCatched();
-
+            m_StageSetting.GetReward_police();
         }
     }
     private void OnTriggerEnter(Collider other)
