@@ -12,7 +12,7 @@ using Unity.MLAgentsExamples;
 public class ruby_runner : Agent
 {
     [SerializeField]
-    private StageSetting m_AreaSetting;
+    private ruby_AreaSetting m_AreaSetting;
     private Rigidbody m_AgentRb;
 
     public NNModel DetectGoal;
@@ -42,12 +42,17 @@ public class ruby_runner : Agent
     public NavMeshAgent m_navagent;
     public LayerMask m_chaserlayermask=0;
     public LayerMask m_Goallayermask=0;
+
+    //도망 방향벡터
+    Vector3 RunVector;
+    //도망가야할 방향과 현재 내 각도의 차이
+    float runAngle;
     public override void Initialize()
     {
         m_AgentRb = GetComponent<Rigidbody>();
         m_navagent = GetComponent<NavMeshAgent>();
         m_behaviorParameters = gameObject.GetComponent<BehaviorParameters>();
-        
+        runAngle=0f;
         if (m_behaviorParameters.TeamId == (int)Team.Chaser)
         {
             team = Team.Chaser;
@@ -74,14 +79,19 @@ public class ruby_runner : Agent
      private void FixedUpdate()
     {
         ConfigureAgent();
-
+        Vector3 current_velocity=transform.InverseTransformDirection(m_AgentRb.velocity);
+        
         if (SenseEnemy){
-            m_AreaSetting.Reward_Get(-1f/m_AreaSetting.MaxEnvironmentSteps);
+            runAngle=Vector3.Angle(transform.forward,RunVector);
+            m_AreaSetting.Reward_Get(-runAngle/m_AreaSetting.MaxEnvironmentSteps);
+        }
+        else{
+            m_AreaSetting.Reward_Get(+1f/m_AreaSetting.MaxEnvironmentSteps);
         }
         
 
 
-        Vector3 current_velocity=transform.InverseTransformDirection(m_AgentRb.velocity);
+        
         if(current_velocity.z > m_AreaSetting.agentRunSpeed*0.75f){
             m_AreaSetting.Reward_Get(+1f/m_AreaSetting.MaxEnvironmentSteps);
         }
@@ -128,7 +138,7 @@ public class ruby_runner : Agent
     void Detect()
     {
         //감지거리에 Goal 이 있을 때 다른 러너와 위치 공유
-        Collider[] Goals=Physics.OverlapSphere(transform.position,m_AreaSetting.runnerDetectRadius,m_Goallayermask);
+        Collider[] Goals=Physics.OverlapSphere(transform.position,m_AreaSetting.RunnerDetectRadius,m_Goallayermask);
 
         if(Goals.Length>0){
                 Vector3 dir=(Goals[0].transform.position-transform.position).normalized;
@@ -150,10 +160,16 @@ public class ruby_runner : Agent
         SenseEnemy=false;
         
 
-        Collider[] Enemys=Physics.OverlapSphere(transform.position,m_AreaSetting.runnerDetectRadius, m_chaserlayermask);
-
+        //주변 적들 감지
+        Collider[] Enemys=Physics.OverlapSphere(transform.position,m_AreaSetting.RunnerDetectRadius, m_chaserlayermask);
+        //도망 방향벡터
+        RunVector= Vector3.zero;
         if(Enemys.Length>0){
             SenseEnemy=true;
+            foreach(var item in Enemys){
+                RunVector+=transform.localPosition-item.transform.localPosition;
+            }
+            RunVector=RunVector.normalized;
             // RaycastHit hit;
             // Vector3 dir=Enemys[0].transform.position-transform.position;
             // if(Physics.Raycast(transform.position+Vector3.up, dir, out hit)){
@@ -167,20 +183,19 @@ public class ruby_runner : Agent
 
     public void ConfigureAgent()
     {
-        if (m_AreaSetting.train == StageSetting.TrainBrain.DetectGoalBrain)
+        if (m_AreaSetting.train == ruby_AreaSetting.TrainBrain.DetectGoalBrain)
         {
             SetModel(m_DetectGoalBehaviorName, DetectGoal);
         }
-        else if (m_AreaSetting.train == StageSetting.TrainBrain.DetectRubyBrain)
+        else if (m_AreaSetting.train ==ruby_AreaSetting.TrainBrain.DetectRubyBrain)
         {
             SetModel(m_DetectRubyBehaviorName, DetectRuby);
         }
-        else if (m_AreaSetting.train == StageSetting.TrainBrain.RunBrain)
+        else if (m_AreaSetting.train == ruby_AreaSetting.TrainBrain.RunBrain)
         {
             SetModel(m_RunModelBehaviorName, RunModel);
         }
-        else if(m_AreaSetting.train==StageSetting.TrainBrain.TotalBrain){
-            Debug.Log(m_AreaSetting.findruby);
+        else if(m_AreaSetting.train==ruby_AreaSetting.TrainBrain.TotalBrain){
             //적을 감지했다면 - 도망
             if(SenseEnemy){
                 SetModel(m_RunModelBehaviorName, RunModel);
@@ -240,26 +255,26 @@ public class ruby_runner : Agent
 
     public override void CollectObservations(VectorSensor sensor)
     {
-        if(m_AreaSetting.train==StageSetting.TrainBrain.DetectRubyBrain){
+        if(m_AreaSetting.train==ruby_AreaSetting.TrainBrain.DetectRubyBrain){
             sensor.AddObservation(hasruby); //필요없으므로 이후 SenseEnemy로 교체 또는 벡터 사이즈 변경 가능 여부 확인할예정
             sensor.AddObservation(transform.InverseTransformDirection(m_AgentRb.velocity));
             sensor.AddObservation(m_AreaSetting.DetectGoal);
         }
-        else if(m_AreaSetting.train==StageSetting.TrainBrain.DetectGoalBrain){
+        else if(m_AreaSetting.train==ruby_AreaSetting.TrainBrain.DetectGoalBrain){
             sensor.AddObservation(hasruby);
             sensor.AddObservation(transform.InverseTransformDirection(m_AgentRb.velocity));
             sensor.AddObservation(m_AreaSetting.DetectGoal);
         }
-        else if(m_AreaSetting.train==StageSetting.TrainBrain.RunBrain){
+        else if(m_AreaSetting.train==ruby_AreaSetting.TrainBrain.RunBrain){
             sensor.AddObservation(SenseEnemy);
             sensor.AddObservation(transform.InverseTransformDirection(m_AgentRb.velocity));
-            sensor.AddObservation(m_AreaSetting.DetectGoal); //필요없으므로 이후 벡터 사이즈 변경 가능 여부 확인
+            sensor.AddObservation(runAngle);
         }
-        else if(m_AreaSetting.train==StageSetting.TrainBrain.TotalBrain){
+        else if(m_AreaSetting.train==ruby_AreaSetting.TrainBrain.TotalBrain){
             if(SenseEnemy){
                 sensor.AddObservation(SenseEnemy);
                 sensor.AddObservation(transform.InverseTransformDirection(m_AgentRb.velocity));
-                sensor.AddObservation(m_AreaSetting.DetectGoal);
+                sensor.AddObservation(runAngle);
             }
             else if(m_AreaSetting.findruby){
                 sensor.AddObservation(hasruby);

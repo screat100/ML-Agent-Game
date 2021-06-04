@@ -55,10 +55,10 @@ TagManager:
   - goal
   - chaser
   - invisible
-  - 
-  - 
-  - 
-  - 
+  - thief_img
+  - police_img
+  - thief
+  - wall
   - 
   - 
   - 
