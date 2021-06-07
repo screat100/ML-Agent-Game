@@ -32,6 +32,10 @@ public static class GameManager
     // UI_Setting
     public static GameObject text_policeNum = GameObject.Find("text_policeNum");
     public static GameObject text_thiefNum = GameObject.Find("text_thiefNum");
+    public static Slider slider_bgm = GameObject.Find("slider_bgm").GetComponent<Slider>();
+    public static Slider slider_sfx = GameObject.Find("slider_sfx").GetComponent<Slider>();
+    public static GameObject text_bgm = GameObject.Find("text_bgm");
+    public static GameObject text_sfx = GameObject.Find("text_sfx");
 
 
     // UI_playing
