@@ -47,16 +47,13 @@ public class StageSetting : MonoBehaviour
 
     /* ===      Variables     ===  */
 
-    [Header("Max Environment Steps")] public int MaxEnvironmentSteps = 30000; // 50 (per 1 second)
-
+    // For Managing Agent
     public GameObject[] policeAgents;
     public GameObject[] thiefAgents;
 
-    // 각 팀의 유닛들(에이전트+플레이어)을 리스트로 저장, 씬 리셋 시 활용
     public List<PoliceInfo> policeList = new List<PoliceInfo>();         
     public List<ThiefInfo> runnerList = new List<ThiefInfo>();            
 
-    // 에이전트 그룹 => 그룹 보상으로 학습
     private SimpleMultiAgentGroup chaserGroup;
     private SimpleMultiAgentGroup runnerGroup;
 
@@ -67,18 +64,23 @@ public class StageSetting : MonoBehaviour
     public float agentRunSpeed = 30f;
     public float runnerDetectRadius;                // 러너가 골을 감지할수있는 거리.
 
-    [HideInInspector] public int m_ResetTimer;
     [HideInInspector] public int willCatchNum;      // Chaser가 잡을수있는 러너 수
 
-    //bool rubygoal = false;                          // 루비를 든 러너 탈출 확인
     int escapenum = 0;                              // 탈출 성공한 러너 수
+
+    public TrainBrain train; // thief agent의 brain
+
+    // For Maniging Stage
+    [HideInInspector] public float timer;
+    public float maxPlayTime = 300;
+    public float maxLoadingTime = 3f;
+    public float maxPolicesWatingTime = 7f;
+
 
     [System.NonSerialized] public int goalIndex;    // 현재 goal의 index
     [System.NonSerialized] public int key_player;   // 현재 runnerlist중 ruby를 가진 멤버의 인덱스
     [System.NonSerialized] public bool findruby;    // 루비를 러너가 먹었을 시 활성화.
     [System.NonSerialized] public bool DetectGoal;  // 러너들이 골의 위치를 봤는가?
-
-    public TrainBrain train; // thief agent의 brain
 
     GameObject[] visitCoinList;                     // police agent가 방문해야 하는 trigger list
     int coinNum;                                    // 방문할 때마다 +1
@@ -90,9 +92,8 @@ public class StageSetting : MonoBehaviour
 
     void Start()
     {
-        GameManager.stage = 0;
-        GameManager.winNum_Police = 0;
-        GameManager.winNum_Thief = 0;
+        GameManager.phase = GameManager.Phase.waitLoading;
+
 
         /* ===      Initiate variables for police team    ===  */
         visitCoinList = GameObject.FindGameObjectsWithTag("areaDetector");
@@ -100,18 +101,14 @@ public class StageSetting : MonoBehaviour
         catchedRunnerNum = 0;
 
         /* ===      Set Default Environment     ===  */
-        m_ResetTimer = 0;
-        willCatchNum = runnerList.Count;
+        timer = 0;
+        willCatchNum = GameManager.thiefNum;
         ResetScene();
     }
 
-    void FixedUpdate()
+    private void Update() 
     {
-        if(!GameManager.flowPlayingTime)
-            return;
-
-
-        m_ResetTimer++;
+        ManageStageTime();
 
         // Thief 중 한 명이 RaySensor를 통해 Goal(탈출구)를 발견하면 CapsuleCollider를 true로 만듦
         if (gameObject.GetComponent<CapsuleCollider>().isTrigger == true && !DetectGoal)
@@ -120,34 +117,49 @@ public class StageSetting : MonoBehaviour
             DetectGoal = true;
         }
 
-
         /* ===      Thief : 현재 사용 중인 brain에 따라 reward를 다르게 받는다.     ===  */
         if (train == TrainBrain.RunBrain)
         {
-            runnerGroup.AddGroupReward(1f / MaxEnvironmentSteps);
+            runnerGroup.AddGroupReward(1f / maxPlayTime*50);
         }
 
         else if (train == TrainBrain.DetectGoalBrain || train == TrainBrain.DetectRubyBrain)
         {
-            runnerGroup.AddGroupReward(-1f / MaxEnvironmentSteps);
+            runnerGroup.AddGroupReward(-1f / maxPlayTime*50);
+        }
+    }
+
+
+    void ManageStageTime()
+    {
+        timer += Time.deltaTime;
+
+        if(GameManager.phase == GameManager.Phase.waitLoading
+        && timer >= maxLoadingTime)
+        {
+            timer = 0f;
+            GameManager.phase = GameManager.Phase.policesWating;
         }
 
-
-        // Time Over
-        if (m_ResetTimer > MaxEnvironmentSteps)
+        else if(GameManager.phase == GameManager.Phase.policesWating
+        && timer >= maxPolicesWatingTime)
         {
-            chaserGroup.AddGroupReward(-willCatchNum);
-
-            if (train == TrainBrain.RunBrain)
-                runnerGroup.AddGroupReward(1f);
+            timer = 0f;
+            GameManager.phase = GameManager.Phase.play;
+        }
+        
+        else if(GameManager.phase == GameManager.Phase.play
+        && timer >= maxPlayTime)
+        {
+            timer = 0f;
+            
+            //POLICE TEAM WIN! (add plz)
 
             runnerGroup.GroupEpisodeInterrupted();
             chaserGroup.GroupEpisodeInterrupted();
 
-            ResetScene();
+            GameManager.phase = GameManager.Phase.play;
         }
-
-        
 
     }
 
@@ -158,91 +170,71 @@ public class StageSetting : MonoBehaviour
     // 매치를 처음 시작할 때 한 번만 실행
     public void ResetInitialInformation()
     {
-        // reset Game Data 
-        GameManager.stage = 0;
-        GameManager.winNum_Police = 0;
-        GameManager.winNum_Thief = 0;
+        
+        chaserGroup = new SimpleMultiAgentGroup();
+        runnerGroup = new SimpleMultiAgentGroup();
 
-
-        // reset each agents num (follow setting)
+        // reset each agents group
         for(int i=0; i<3; i++)
         {
-            if(i <GameManager.PoliceNum)
+            if(GameManager.playersTeam == Player.Team.police)
             {
-                policeAgents[i].SetActive(false);
-                policeAgents[i].SetActive(true);
+                if(i <GameManager.policeNum-1)
+                {
+                    policeAgents[i].SetActive(false);
+                    policeAgents[i].SetActive(true);
+                    chaserGroup.RegisterAgent(policeAgents[i].GetComponent<PoliceAgent>());
+                }
+                else 
+                {
+                    policeAgents[i].SetActive(false);
+                }
             }
+
             else 
             {
-                policeAgents[i].SetActive(false);
+                if(i <GameManager.policeNum)
+                {
+                    policeAgents[i].SetActive(false);
+                    policeAgents[i].SetActive(true);
+                    chaserGroup.RegisterAgent(policeAgents[i].GetComponent<PoliceAgent>());
+                }
+                else 
+                {
+                    policeAgents[i].SetActive(false);
+                }
             }
         }
 
         for(int i=0; i<6; i++) 
         { 
-            if(i <GameManager.ThiefNum)
+            if(GameManager.playersTeam == Player.Team.thief)
             {
-                thiefAgents[i].SetActive(true);
+                if(i <GameManager.thiefNum -1)
+                {
+                    thiefAgents[i].SetActive(false);
+                    thiefAgents[i].SetActive(true);
+                    chaserGroup.RegisterAgent(policeAgents[i].GetComponent<TheifAgent>());
+                }
+                else 
+                {
+                    thiefAgents[i].SetActive(false);
+                }
             }
+
             else 
             {
-                thiefAgents[i].SetActive(false);
+                if(i <GameManager.thiefNum)
+                {
+                    thiefAgents[i].SetActive(false);
+                    thiefAgents[i].SetActive(true);
+                    chaserGroup.RegisterAgent(policeAgents[i].GetComponent<TheifAgent>());
+                }
+                else 
+                {
+                    thiefAgents[i].SetActive(false);
+                }
             }
-
-        }
-
-        // save agents initial inform to use when reset stage(change round)
-        if(policeList.Count != 0)
-            policeList.Clear();
-
-        if(runnerList.Count != 0)
-            runnerList.Clear();
-
-        chaserGroup = new SimpleMultiAgentGroup();
-        runnerGroup = new SimpleMultiAgentGroup();
-
-        for (int i = 0; i < GameManager.PoliceNum; i++)
-        {
-            GameObject agent = policeAgents[i];
-
-            PoliceInfo agentInfo = new PoliceInfo();
-            agentInfo.agent = agent.GetComponent<PoliceAgent>();
-            agentInfo.startPos = agent.transform.localPosition;
-            agentInfo.startRot = agent.transform.rotation;
-            agentInfo.rb = agent.GetComponent<Rigidbody>();
-
-            policeList.Add(agentInfo);
-        }
-
-        for (int i = 0; i < thiefAgents.Length; i++)
-        {
-            GameObject agent = thiefAgents[i];
-
-            ThiefInfo agentInfo = new ThiefInfo();
-            agentInfo.agent = agent.GetComponent<ruby_runner>();
-            agentInfo.startPos = agent.transform.localPosition;
-            agentInfo.startRot = agent.transform.rotation;
-            agentInfo.rb = agent.GetComponent<Rigidbody>();
-
-            runnerList.Add(agentInfo);
-        }
-
-
-        // register to agents group
-        foreach (var item in policeList)
-        {
-            item.startPos = item.agent.transform.localPosition;
-            item.startRot = item.agent.transform.localRotation;
-            item.rb = item.agent.GetComponent<Rigidbody>();
-            chaserGroup.RegisterAgent(item.agent);
-        }
-
-        foreach (var item in runnerList)
-        {
-            item.startPos = item.agent.transform.localPosition;
-            item.startRot = item.agent.transform.localRotation;
-            item.rb = item.agent.GetComponent<Rigidbody>();
-            runnerGroup.RegisterAgent(item.agent);
         }
 
         // Initiate variables for police team 
@@ -251,7 +243,6 @@ public class StageSetting : MonoBehaviour
         catchedRunnerNum = 0;
 
         // Set Default Environment  
-        m_ResetTimer = 0;
         willCatchNum = runnerList.Count;
         ResetScene();
     }
@@ -286,7 +277,6 @@ public class StageSetting : MonoBehaviour
         }
 
         // reset variables of environment 
-        m_ResetTimer = 0;
         willCatchNum = runnerList.Count;
 
         catchedRunnerNum = 0;
@@ -360,8 +350,6 @@ public class StageSetting : MonoBehaviour
                 chaserGroup.GroupEpisodeInterrupted();
 
             ResetScene();
-            GameManager.recentWinner = Player.Team.thief;
-            GameObject.Find("@UIController").GetComponent<UIController>().ChangePhaseToResult();
         }
 
     }

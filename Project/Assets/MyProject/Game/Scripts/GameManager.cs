@@ -19,43 +19,18 @@ public static class GameManager
 
     /* ===      Variables       === */
 
+    public static Player.Team playersTeam;
+
     public static Phase phase;
 
-
-    // UI_Canvas
-    public static GameObject ui_MainMenu = GameObject.Find("UI_MainMenu");
-    public static GameObject ui_Setting = GameObject.Find("UI_Setting");
-    public static GameObject ui_SelectTeam= GameObject.Find("UI_SelectTeam");
-    public static GameObject ui_playing= GameObject.Find("UI_Playing");
-    public static GameObject ui_result= GameObject.Find("UI_Result");
-    
-    // UI_Setting
-    public static GameObject text_policeNum = GameObject.Find("text_policeNum");
-    public static GameObject text_thiefNum = GameObject.Find("text_thiefNum");
+    public static int policeNum;
+    public static int thiefNum;
 
 
-    // UI_playing
-    public static Text watingTimeText = GameObject.Find("text_waitingTime").GetComponent<Text>();
-    public static Text playingTimeText = GameObject.Find("text_playingTime").GetComponent<Text>();
-
-
-
-    public static Player m_Player = GameObject.Find("Player").GetComponent<Player>();
-
-
-
-    public static int PoliceNum;
-    public static int ThiefNum;
-
-
-    // play information
     public static bool flowWatingTime = false;
     public static float watingTime = 0f;
     public static bool flowPlayingTime = false;
     public static float playingTime = 0f;
-
-
-    public static Player.Team recentWinner;
 
 
     public static int stage;

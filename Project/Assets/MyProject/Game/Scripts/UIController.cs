@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class UIController : MonoBehaviour
 {
     StageSetting m_StageSetting;
+    Player m_Player;
 
 
     /* ===      base functions       === */
@@ -13,10 +14,21 @@ public class UIController : MonoBehaviour
     {
         m_StageSetting = GameObject.Find("GameArea").GetComponent<StageSetting>();
 
-        ChangePhaseToMenu();
+        // Activate Player's Controll
+        GameManager.m_Player.controllActivate = true;
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
 
-        GameManager.PoliceNum = 2;
-        GameManager.ThiefNum = 4;
+
+        // Let Wating time flow
+        GameManager.watingTime = 3f;
+        GameManager.flowWatingTime = true;
+
+        GameManager.watingTimeText.gameObject.SetActive(true);
+        GameManager.playingTimeText.gameObject.SetActive(false);
+
+        // Initialization
+        m_StageSetting.ResetInitialInformation();
     }
 
     void Update()
@@ -66,60 +78,6 @@ public class UIController : MonoBehaviour
     }
 
 
-    /* ===      phase change       === */
-    public void ChangePhaseToMenu() 
-    {
-        GameManager.phase = GameManager.Phase.menu;
-        GameManager.ui_MainMenu.SetActive(true);
-        GameManager.ui_Setting.SetActive(false);
-        GameManager.ui_SelectTeam.SetActive(false);
-        GameManager.ui_playing.SetActive(false);
-        GameManager.ui_result.SetActive(false);
-
-        GameManager.m_Player.controllActivate = false;
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.None;
-    }
-
-    public void ChangePhaseToSelectTeam() 
-    {
-        GameManager.phase = GameManager.Phase.menu;
-        GameManager.ui_MainMenu.SetActive(false);
-        GameManager.ui_SelectTeam.SetActive(true);
-        GameManager.ui_playing.SetActive(false);
-        GameManager.ui_result.SetActive(false);
-    }
-
-    public void ChangePhaseToWait(int teamIdx) 
-    {
-        GameManager.phase = GameManager.Phase.wait;
-        GameManager.ui_MainMenu.SetActive(false);
-        GameManager.ui_SelectTeam.SetActive(false);
-        GameManager.ui_playing.SetActive(true);
-        GameManager.ui_result.SetActive(false);
-
-        // Activate Player's Controll
-        GameManager.m_Player.controllActivate = true;
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
-
-        // Select Player's Team
-        GameManager.m_Player.team = (Player.Team)teamIdx;
-
-        // Turn on the player's spot-light
-        GameManager.m_Player.TurnOnSpotLight();
-
-        // Let Wating time flow
-        GameManager.watingTime = 3f;
-        GameManager.flowWatingTime = true;
-
-        GameManager.watingTimeText.gameObject.SetActive(true);
-        GameManager.playingTimeText.gameObject.SetActive(false);
-
-        // Initialization
-        m_StageSetting.ResetInitialInformation();
-    }
-
     public void ChangePhaseToThiefOnly() 
     {
         GameManager.phase = GameManager.Phase.thiefOnly;
@@ -150,61 +108,6 @@ public class UIController : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
     }
 
-    /* ===      button functions       === */
-    public void ExitProgram()
-    {
-#if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
-#else
-        Application.Quit(); // 어플리케이션 종료
-#endif
-    }
-
-    public void GoToSetting()
-    {
-        GameManager.ui_MainMenu.SetActive(false);
-        GameManager.ui_Setting.SetActive(true);
-    }
-
-    public void AddPoliceNum(bool isPlus)
-    {
-        if(isPlus)
-        {
-            if(GameManager.PoliceNum < 3)
-                GameManager.PoliceNum++;
-
-        }
-        else 
-        {
-            if(GameManager.PoliceNum > 2)
-                GameManager.PoliceNum--;
-        }
-
-        refreshMemberNumText();
-
-    }
-    public void AddThiefNum(bool isPlus)
-    {
-        if(isPlus)
-        {
-            if(GameManager.ThiefNum < 6)
-                GameManager.ThiefNum++;
-
-        }
-        else 
-        {
-            if(GameManager.ThiefNum > 4)
-                GameManager.ThiefNum--;
-        }
-
-        refreshMemberNumText();
-    }
-
-    private void refreshMemberNumText()
-    {
-        GameManager.text_policeNum.GetComponent<Text>().text = GameManager.PoliceNum.ToString();
-        GameManager.text_thiefNum.GetComponent<Text>().text = GameManager.ThiefNum.ToString();
-    }
 
 
 }

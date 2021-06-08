@@ -38,11 +38,25 @@ public class Player : MonoBehaviour
 
     void Start()
     {
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        
         m_Animator = gameObject.GetComponent<Animator>();
         m_Rigidbody = gameObject.GetComponent<Rigidbody>();
         m_Camera = transform.Find("Main Camera").gameObject;
 
         m_StageSetting = GameObject.Find("GameArea").GetComponent<StageSetting>();
+
+        switch(GameManager.playersTeam)
+        {
+            case Team.police:
+                team = Team.police;
+                break;
+            case Team.thief:
+                team = Team.thief;
+                break;
+        }
+        TurnOnSpotLight();
     }
 
     void Update()
