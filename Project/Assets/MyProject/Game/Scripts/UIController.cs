@@ -15,9 +15,7 @@ public class UIController : MonoBehaviour
         m_StageSetting = GameObject.Find("GameArea").GetComponent<StageSetting>();
 
         // Activate Player's Controll
-        GameManager.m_Player.controllActivate = true;
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
+        m_Player.controllActivate = true;
 
 
         // Let Wating time flow

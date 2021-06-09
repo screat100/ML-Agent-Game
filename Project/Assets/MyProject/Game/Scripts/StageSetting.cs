@@ -2,38 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.MLAgents;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class StageSetting : MonoBehaviour
 {
     /* ===      Sub Classes     ===  */
 
-    public class PoliceInfo
-    {
-        public PoliceAgent agent;
-
-        [HideInInspector]
-        public Vector3 startPos;
-
-        [HideInInspector]
-        public Quaternion startRot;
-
-        [HideInInspector]
-        public Rigidbody rb;
-    }
-
-    public class ThiefInfo
-    {
-        public ruby_runner agent;
-
-        [HideInInspector]
-        public Vector3 startPos;
-
-        [HideInInspector]
-        public Quaternion startRot;
-
-        [HideInInspector]
-        public Rigidbody rb;
-    }
 
     public enum TrainBrain
     {
@@ -49,10 +24,7 @@ public class StageSetting : MonoBehaviour
 
     // For Managing Agent
     public GameObject[] policeAgents;
-    public GameObject[] thiefAgents;
-
-    public List<PoliceInfo> policeList = new List<PoliceInfo>();         
-    public List<ThiefInfo> runnerList = new List<ThiefInfo>();            
+    public GameObject[] thiefAgents;      
 
     private SimpleMultiAgentGroup chaserGroup;
     private SimpleMultiAgentGroup runnerGroup;
@@ -86,6 +58,15 @@ public class StageSetting : MonoBehaviour
     int coinNum;                                    // 방문할 때마다 +1
     [HideInInspector] public int catchedRunnerNum;  // 잡힌 도둑의 수
 
+    // Player
+    public Player m_Player;
+
+
+    // UI
+    Text watingTime;
+    Text playingTime;
+
+
 
 
     /* ===      Base Functions     ===  */
@@ -93,7 +74,6 @@ public class StageSetting : MonoBehaviour
     void Start()
     {
         GameManager.phase = GameManager.Phase.waitLoading;
-
 
         /* ===      Initiate variables for police team    ===  */
         visitCoinList = GameObject.FindGameObjectsWithTag("areaDetector");
@@ -105,72 +85,8 @@ public class StageSetting : MonoBehaviour
         willCatchNum = GameManager.thiefNum;
         ResetScene();
     }
-
-    private void Update() 
+    public void ResetScene()
     {
-        ManageStageTime();
-
-        // Thief 중 한 명이 RaySensor를 통해 Goal(탈출구)를 발견하면 CapsuleCollider를 true로 만듦
-        if (gameObject.GetComponent<CapsuleCollider>().isTrigger == true && !DetectGoal)
-        {
-            runnerGroup.AddGroupReward(1f);
-            DetectGoal = true;
-        }
-
-        /* ===      Thief : 현재 사용 중인 brain에 따라 reward를 다르게 받는다.     ===  */
-        if (train == TrainBrain.RunBrain)
-        {
-            runnerGroup.AddGroupReward(1f / maxPlayTime*50);
-        }
-
-        else if (train == TrainBrain.DetectGoalBrain || train == TrainBrain.DetectRubyBrain)
-        {
-            runnerGroup.AddGroupReward(-1f / maxPlayTime*50);
-        }
-    }
-
-
-    void ManageStageTime()
-    {
-        timer += Time.deltaTime;
-
-        if(GameManager.phase == GameManager.Phase.waitLoading
-        && timer >= maxLoadingTime)
-        {
-            timer = 0f;
-            GameManager.phase = GameManager.Phase.policesWating;
-        }
-
-        else if(GameManager.phase == GameManager.Phase.policesWating
-        && timer >= maxPolicesWatingTime)
-        {
-            timer = 0f;
-            GameManager.phase = GameManager.Phase.play;
-        }
-        
-        else if(GameManager.phase == GameManager.Phase.play
-        && timer >= maxPlayTime)
-        {
-            timer = 0f;
-            
-            //POLICE TEAM WIN! (add plz)
-
-            runnerGroup.GroupEpisodeInterrupted();
-            chaserGroup.GroupEpisodeInterrupted();
-
-            GameManager.phase = GameManager.Phase.play;
-        }
-
-    }
-
-
-
-    /* ===      Externally executed functions      ===  */
-
-    // 매치를 처음 시작할 때 한 번만 실행
-    public void ResetInitialInformation()
-    {
-        
         chaserGroup = new SimpleMultiAgentGroup();
         runnerGroup = new SimpleMultiAgentGroup();
 
@@ -243,76 +159,76 @@ public class StageSetting : MonoBehaviour
         catchedRunnerNum = 0;
 
         // Set Default Environment  
-        willCatchNum = runnerList.Count;
-        ResetScene();
-    }
+        willCatchNum = GameManager.thiefNum;
 
-
-    // round 종료 후 scene을 초기화.
-    // 매 라운드 종료 시마다 실행
-    void ResetScene()
-    {
-        // reset agents' transform
-        foreach (var item in policeList)
-        {
-            item.agent.transform.localPosition = item.startPos;
-            item.agent.transform.localRotation = item.startRot;
-            item.rb.velocity = Vector3.zero;
-            item.rb.angularVelocity = Vector3.zero;
-        }
-
-        foreach (var item in runnerList)
-        {
-            if (!item.agent.gameObject.activeInHierarchy)
-            {
-                item.agent.gameObject.SetActive(true);
-                runnerGroup.RegisterAgent(item.agent);
-            }
-            item.agent.transform.localPosition = item.startPos;
-            item.agent.transform.localRotation = item.startRot;
-            item.rb.velocity = Vector3.zero;
-            item.rb.angularVelocity = Vector3.zero;
-            item.agent.hasruby = false;
-            item.agent.m_navagent.ResetPath();
-        }
-
-        // reset variables of environment 
-        willCatchNum = runnerList.Count;
-
-        catchedRunnerNum = 0;
-        coinNum = 0;
-
+        
         findruby = false;
         DetectGoal = false;
         gameObject.GetComponent<CapsuleCollider>().isTrigger = false;
         escapenum = 0;
 
-        Doorlist[goalIndex].GetComponent<ruby_goal>().Goal_reset();
-
-        // reset objects' transform of envirionment
-        if (train == TrainBrain.DetectGoalBrain)
-        {
-            random_goal();
-        }
-
-        else if (train == TrainBrain.DetectRubyBrain)
-        {
-            RandomPos_ruby(); //루비 위치 랜덤으로 활성화
-        }
-
-        else if (train == TrainBrain.TotalBrain)
-        {
-            RandomPos_ruby();
-        }
-
-
-
-        // reset(activate) visit-coin 
-        for (int i = 0; i < visitCoinList.Length; i++)
-        {
-            visitCoinList[i].SetActive(true);
-        }
+        RandomPos_ruby();
     }
+
+    private void Update() 
+    {
+        ManageStageTime();
+
+        // Thief 중 한 명이 RaySensor를 통해 Goal(탈출구)를 발견하면 CapsuleCollider를 true로 만듦
+        if (gameObject.GetComponent<CapsuleCollider>().isTrigger == true && !DetectGoal)
+        {
+            runnerGroup.AddGroupReward(1f);
+            DetectGoal = true;
+        }
+
+    }
+
+
+    void ManageStageTime()
+    {
+        timer += Time.deltaTime;
+
+        if(GameManager.phase == GameManager.Phase.waitLoading
+        && timer >= maxLoadingTime)
+        {
+            timer = 0f;
+            GameManager.phase = GameManager.Phase.policesWating;
+
+            if(GameManager.playersTeam == Player.Team.thief)
+            {
+                m_Player.ActivatePlayersControll();
+            }
+        }
+
+        else if(GameManager.phase == GameManager.Phase.policesWating
+        && timer >= maxPolicesWatingTime)
+        {
+            timer = 0f;
+            GameManager.phase = GameManager.Phase.play;
+        }
+        
+        else if(GameManager.phase == GameManager.Phase.play
+        && timer >= maxPlayTime)
+        {
+            timer = 0f;
+            
+            //POLICE TEAM WIN! (add plz)
+
+            runnerGroup.GroupEpisodeInterrupted();
+            chaserGroup.GroupEpisodeInterrupted();
+
+            GameManager.phase = GameManager.Phase.play;
+        }
+
+    }
+
+
+
+    /* ===      Externally executed functions      ===  */
+
+    // 매치를 처음 시작할 때 한 번만 실행
+
+
 
     // 루비를 얻으면 thief에게 보상을 주는 함수 (외부에서 실행)
     public void Reward_RubyGet()
@@ -375,11 +291,11 @@ public class StageSetting : MonoBehaviour
         catchedRunnerNum++;
         willCatchNum--;
 
-        chaserGroup.AddGroupReward(2.0f / runnerList.Count);
-        runnerGroup.AddGroupReward(-2.0f / runnerList.Count);
+        chaserGroup.AddGroupReward(2.0f / GameManager.thiefNum);
+        runnerGroup.AddGroupReward(-2.0f / GameManager.thiefNum);
 
         // All runners are catched => chaser win!
-        if (catchedRunnerNum >= runnerList.Count)
+        if (catchedRunnerNum >= GameManager.thiefNum)
         {
             runnerGroup.GroupEpisodeInterrupted();
             chaserGroup.GroupEpisodeInterrupted();

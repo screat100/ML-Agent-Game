@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
@@ -19,8 +20,8 @@ public class MainMenu : MonoBehaviour
     void SetDefaultValueOfGameManager()
     {
 
-        GameManager.PoliceNum = 2;
-        GameManager.ThiefNum = 4;
+        GameManager.policeNum = 2;
+        GameManager.thiefNum = 4;
     }
 
 
@@ -59,14 +60,14 @@ public class MainMenu : MonoBehaviour
     {
         if(isPlus)
         {
-            if(GameManager.PoliceNum < 3)
-                GameManager.PoliceNum++;
+            if(GameManager.policeNum < 3)
+                GameManager.policeNum++;
 
         }
         else 
         {
-            if(GameManager.PoliceNum > 2)
-                GameManager.PoliceNum--;
+            if(GameManager.policeNum > 2)
+                GameManager.policeNum--;
         }
 
         refreshMemberNumText();
@@ -76,22 +77,22 @@ public class MainMenu : MonoBehaviour
     {
         if(isPlus)
         {
-            if(GameManager.ThiefNum < 6)
-                GameManager.ThiefNum++;
+            if(GameManager.thiefNum < 6)
+                GameManager.thiefNum++;
 
         }
         else 
         {
-            if(GameManager.ThiefNum > 4)
-                GameManager.ThiefNum--;
+            if(GameManager.thiefNum > 4)
+                GameManager.thiefNum--;
         }
 
         refreshMemberNumText();
     }
     private void refreshMemberNumText()
     {
-        GameObject.Find("text_policeNum").GetComponent<Text>().text = GameManager.PoliceNum.ToString();
-        GameObject.Find("text_thiefNum").GetComponent<Text>().text = GameManager.ThiefNum.ToString();
+        GameObject.Find("text_policeNum").GetComponent<Text>().text = GameManager.policeNum.ToString();
+        GameObject.Find("text_thiefNum").GetComponent<Text>().text = GameManager.thiefNum.ToString();
     }
 
     /* ===      Select Team     === */
@@ -110,7 +111,8 @@ public class MainMenu : MonoBehaviour
 
     public void ChangePhaseToWait() 
     {
-        GameManager.phase = GameManager.Phase.wait;
+        GameManager.phase = GameManager.Phase.waitLoading;
+        SceneManager.LoadScene("Stage");
     }
 
 }

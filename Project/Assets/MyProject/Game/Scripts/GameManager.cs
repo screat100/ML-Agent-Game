@@ -10,8 +10,8 @@ public static class GameManager
     {
         menu,
         selectTeam,
-        wait,
-        thiefOnly,
+        waitLoading,
+        policesWating,
         play,
         result,
     }
@@ -26,11 +26,6 @@ public static class GameManager
     public static int policeNum;
     public static int thiefNum;
 
-
-    public static bool flowWatingTime = false;
-    public static float watingTime = 0f;
-    public static bool flowPlayingTime = false;
-    public static float playingTime = 0f;
 
 
     public static int stage;

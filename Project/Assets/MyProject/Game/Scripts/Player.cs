@@ -38,6 +38,7 @@ public class Player : MonoBehaviour
 
     void Start()
     {
+        controllActivate = false;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
         
@@ -171,5 +172,10 @@ public class Player : MonoBehaviour
             lightOfPolice.SetActive(false);
             break;
         }
+    }
+
+    public void ActivatePlayersControll()
+    {
+        controllActivate = true;
     }
 }
