@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class UIController : MonoBehaviour
 {
@@ -98,7 +99,7 @@ public class UIController : MonoBehaviour
         GameManager.ui_playing.SetActive(true);
         GameManager.ui_result.SetActive(false);
 
-        // Activate Player's Controll
+        // Activate Player's Control
         GameManager.m_Player.controllActivate = true;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
@@ -198,6 +199,16 @@ public class UIController : MonoBehaviour
         }
 
         refreshMemberNumText();
+    }
+
+    public void ChangeBgmSound()
+    {
+        GameManager.text_bgm.GetComponent<Text>().text = Math.Round(GameManager.slider_bgm.value*100).ToString() + "%";
+    }
+
+    public void ChangeSfxSound()
+    {
+        GameManager.text_sfx.GetComponent<Text>().text = Math.Round(GameManager.slider_sfx.value * 100).ToString() + "%";
     }
 
     private void refreshMemberNumText()
