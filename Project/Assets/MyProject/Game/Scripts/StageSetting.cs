@@ -179,7 +179,6 @@ public class StageSetting : MonoBehaviour
 
     private void Update() 
     {
-        Debug.Log("UPDATE");
 
         ManageStageTime();
 
@@ -202,12 +201,10 @@ public class StageSetting : MonoBehaviour
         switch(GameManager.phase)
         {
         case GameManager.Phase.waitLoading:
-            Debug.Log($"wating Time = {(int)(maxLoadingTime - timer)}");
             text_watingTime.text = ((int)(maxLoadingTime - timer)).ToString();
             break;
 
         case GameManager.Phase.policesWating:
-            Debug.Log($"police's wating Time = {((int)(maxPolicesWatingTime - timer))}");
             text_watingTime.text = ((int)(maxPolicesWatingTime - timer)).ToString();
             break;
 

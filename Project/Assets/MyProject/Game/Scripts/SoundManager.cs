@@ -4,16 +4,74 @@ using UnityEngine;
 
 public class SoundManager : MonoBehaviour
 {
-    public AudioSource audio_MainMenuBGM;
-    public AudioSource audio_IngameBGM;
-    public AudioSource audio_ResultBGM_win;
-    public AudioSource audio_ResultBGM_lose;
-    
-    public AudioSource audio_ButtonClick;
+    AudioSource[] BGMList;
+    AudioSource[] SFXList;
 
-    public void PlayButtonClickSound()
+    private void Start() 
     {
-        audio_ButtonClick.Play();
+        BGMList = GameObject.Find("BGMs").GetComponentsInChildren<AudioSource>();
+        SFXList = GameObject.Find("SFXs").GetComponentsInChildren<AudioSource>();
+
+        PlayAudio("MainMenuBGM");
+
+        DontDestroyOnLoad(gameObject);
+    }
+
+    public void PlayAudio(string name)
+    {
+        for(int i=0; i<BGMList.Length; i++) 
+        {
+            if(BGMList[i].transform.name == name)
+            {
+                BGMList[i].Play();
+                return;
+            }
+        }
+
+        for(int i=0; i<SFXList.Length; i++) 
+        {
+            if(SFXList[i].transform.name == name)
+            {
+                SFXList[i].Play();
+                return;
+            }
+        }
+    }
+
+    public void PauseAudio(string name)
+    {
+        for(int i=0; i<BGMList.Length; i++) 
+        {
+            if(BGMList[i].transform.name == name)
+            {
+                BGMList[i].Pause();
+                return;
+            }
+        }
+
+        for(int i=0; i<SFXList.Length; i++) 
+        {
+            if(SFXList[i].transform.name == name)
+            {
+                SFXList[i].Pause();
+                return;
+            }
+        }
+    }
+
+    public void ControllBGMVolume()
+    {
+        for(int i=0; i<BGMList.Length; i++)
+        {
+            BGMList[i].volume = GameManager.bgmVolume;
+        }
+    }
+    public void ControllSFXVolume()
+    {
+        for(int i=0; i<SFXList.Length; i++)
+        {
+            SFXList[i].volume = GameManager.sfxVolume;
+        }
     }
 
 

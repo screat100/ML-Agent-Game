@@ -10,6 +10,8 @@ public class MainMenu : MonoBehaviour
     public GameObject UI_Setting;
     public GameObject UI_SelectTeam;
 
+
+
     void Start()
     {
         GoToMainMenu();
@@ -106,12 +108,14 @@ public class MainMenu : MonoBehaviour
     public void SelectPoliceTeam()
     {
         GameManager.playersTeam = Player.Team.police;
+        GameObject.Find("Sounds").GetComponent<SoundManager>().PauseAudio("MainMenuBGM");
         ChangePhaseToWait();
     }
 
     public void SelectThiefTeam()
     {
         GameManager.playersTeam = Player.Team.thief;
+        GameObject.Find("Sounds").GetComponent<SoundManager>().PauseAudio("MainMenuBGM");
         ChangePhaseToWait();
     }
 
@@ -120,5 +124,7 @@ public class MainMenu : MonoBehaviour
         GameManager.phase = GameManager.Phase.waitLoading;
         SceneManager.LoadScene("Stage");
     }
+
+
 
 }
