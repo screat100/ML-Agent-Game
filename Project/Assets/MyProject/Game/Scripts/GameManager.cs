@@ -19,6 +19,8 @@ public static class GameManager
 
     /* ===      Variables       === */
 
+
+    // for stage
     public static Player.Team playersTeam;
 
     public static Phase phase;
@@ -26,11 +28,13 @@ public static class GameManager
     public static int policeNum;
     public static int thiefNum;
 
-
-
     public static int stage;
     public static int winNum_Police;
     public static int winNum_Thief;
+
+    // for user setting
+    public static float bgmVolume;
+    public static float sfxVolume;
     
     
 }

@@ -33,6 +33,13 @@ public class Player : MonoBehaviour
     [Range(0.1f, 10.0f)] public float mouseSensitive = 1.0f;
 
 
+    // sounds
+    public AudioSource audio_BGM;
+    public AudioSource audio_Footstep;
+    float heartbeatRange = 25f;
+    public AudioSource audio_Hearbeat;
+
+    public LayerMask m_PoliceLayer;
 
     /*      ===         Functions         === */
 
@@ -67,6 +74,9 @@ public class Player : MonoBehaviour
             KeyboardMove();
             MouseMove();
         }
+
+        PlayHeartBeatSound();
+        
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -155,6 +165,20 @@ public class Player : MonoBehaviour
     }
 
 
+    void PlayHeartBeatSound()
+    {
+        Collider[] sensedEnemise = Physics.OverlapSphere(transform.position, heartbeatRange, m_PoliceLayer);
+        if(GameManager.playersTeam == Player.Team.thief
+        && sensedEnemise.Length > 0)
+        {
+            if(!audio_Hearbeat.isPlaying)
+                audio_Hearbeat.Play();
+        }
+        else 
+        {
+            audio_Hearbeat.Pause();
+        }
+    }
 
     /*      ===         Externally executed functions         === */
 

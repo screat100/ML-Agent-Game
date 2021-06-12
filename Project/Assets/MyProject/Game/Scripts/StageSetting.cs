@@ -45,8 +45,8 @@ public class StageSetting : MonoBehaviour
     // For Maniging Stage
     [HideInInspector] public float timer;
     public float maxPlayTime = 300;
-    public float maxLoadingTime = 3f;
-    public float maxPolicesWatingTime = 7f;
+    public float maxLoadingTime = 3.5f;
+    public float maxPolicesWatingTime = 7.5f;
 
 
     [System.NonSerialized] public int goalIndex;    // 현재 goal의 index
@@ -63,8 +63,8 @@ public class StageSetting : MonoBehaviour
 
 
     // UI
-    Text watingTime;
-    Text playingTime;
+    public Text text_watingTime;
+    public Text text_playingTime;
 
 
 
@@ -74,6 +74,7 @@ public class StageSetting : MonoBehaviour
     void Start()
     {
         GameManager.phase = GameManager.Phase.waitLoading;
+        m_Player.transform.tag = GameManager.playersTeam.ToString();
 
         /* ===      Initiate variables for police team    ===  */
         visitCoinList = GameObject.FindGameObjectsWithTag("areaDetector");
@@ -84,7 +85,13 @@ public class StageSetting : MonoBehaviour
         timer = 0;
         willCatchNum = GameManager.thiefNum;
         ResetScene();
+
+        
+        /* ===      UI     ===  */
+        text_watingTime.gameObject.SetActive(true);
+        text_playingTime.gameObject.SetActive(false);
     }
+
     public void ResetScene()
     {
         chaserGroup = new SimpleMultiAgentGroup();
@@ -172,6 +179,8 @@ public class StageSetting : MonoBehaviour
 
     private void Update() 
     {
+        Debug.Log("UPDATE");
+
         ManageStageTime();
 
         // Thief 중 한 명이 RaySensor를 통해 Goal(탈출구)를 발견하면 CapsuleCollider를 true로 만듦
@@ -188,6 +197,29 @@ public class StageSetting : MonoBehaviour
     {
         timer += Time.deltaTime;
 
+        // ============= UI ============= 
+
+        switch(GameManager.phase)
+        {
+        case GameManager.Phase.waitLoading:
+            Debug.Log($"wating Time = {(int)(maxLoadingTime - timer)}");
+            text_watingTime.text = ((int)(maxLoadingTime - timer)).ToString();
+            break;
+
+        case GameManager.Phase.policesWating:
+            Debug.Log($"police's wating Time = {((int)(maxPolicesWatingTime - timer))}");
+            text_watingTime.text = ((int)(maxPolicesWatingTime - timer)).ToString();
+            break;
+
+        case GameManager.Phase.play :
+            int min = (int)timer / 60;
+            int sec = (int)timer - (min*60);
+            string sec_text = (sec < 10) ? "0"+sec.ToString() : sec.ToString();
+            text_playingTime.text = $"0{min.ToString()}:{sec_text}";
+            break;
+        }
+
+        // change phase : loading -> thief move only
         if(GameManager.phase == GameManager.Phase.waitLoading
         && timer >= maxLoadingTime)
         {
@@ -200,13 +232,20 @@ public class StageSetting : MonoBehaviour
             }
         }
 
+        // change phase : thief move only --> play
         else if(GameManager.phase == GameManager.Phase.policesWating
         && timer >= maxPolicesWatingTime)
         {
             timer = 0f;
             GameManager.phase = GameManager.Phase.play;
+            
+            text_watingTime.gameObject.SetActive(false);
+            text_playingTime.gameObject.SetActive(true);
+
+            m_Player.ActivatePlayersControll();
         }
         
+        // change phase : time over -> police win! 
         else if(GameManager.phase == GameManager.Phase.play
         && timer >= maxPlayTime)
         {
@@ -224,11 +263,7 @@ public class StageSetting : MonoBehaviour
 
 
 
-    /* ===      Externally executed functions      ===  */
-
-    // 매치를 처음 시작할 때 한 번만 실행
-
-
+    /* ===                        Externally executed functions                          ===  */
 
     // 루비를 얻으면 thief에게 보상을 주는 함수 (외부에서 실행)
     public void Reward_RubyGet()

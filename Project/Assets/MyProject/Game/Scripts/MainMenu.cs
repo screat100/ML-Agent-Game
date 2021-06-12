@@ -19,9 +19,15 @@ public class MainMenu : MonoBehaviour
 
     void SetDefaultValueOfGameManager()
     {
-
         GameManager.policeNum = 2;
         GameManager.thiefNum = 4;
+
+        GameManager.stage = 0;
+        GameManager.winNum_Police = 0;
+        GameManager.winNum_Thief = 0;
+
+        GameManager.bgmVolume = 100;
+        GameManager.sfxVolume = 100;
     }
 
 
