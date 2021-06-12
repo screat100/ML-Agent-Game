@@ -32,9 +32,9 @@ public class Player : MonoBehaviour
     float AngleY;
     [Range(0.1f, 10.0f)] public float mouseSensitive = 1.0f;
 
+    bool ESCPressed = false;
 
     // sounds
-    public AudioSource audio_BGM;
     public AudioSource audio_Footstep;
     float heartbeatRange = 25f;
     public AudioSource audio_Hearbeat;
@@ -64,11 +64,28 @@ public class Player : MonoBehaviour
                 team = Team.thief;
                 break;
         }
+
         TurnOnSpotLight();
+
+        if(GameManager.playersTeam == Player.Team.thief)
+        {
+            gameObject.transform.position = GameObject.Find("GameArea").GetComponent<StageSetting>().thiefAgents[GameManager.thiefNum-1].transform.position;
+        }
+        else
+        {
+            gameObject.transform.position = GameObject.Find("GameArea").GetComponent<StageSetting>().policeAgents[GameManager.policeNum-1].transform.position;
+        }
+
+
+        
+
+
     }
 
     void Update()
     {
+        PushESCKey();
+
         if(controllActivate)
         {
             KeyboardMove();
@@ -162,6 +179,33 @@ public class Player : MonoBehaviour
 
         gameObject.transform.eulerAngles = new Vector3(0, AngleX, 0.0f);
         m_Camera.transform.eulerAngles = new Vector3(AngleY, AngleX, 0.0f);
+    }
+
+    void PushESCKey()
+    {
+        if(Input.GetKeyDown(KeyCode.Escape) && !ESCPressed)
+        {
+            ESCPressed = true;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            Time.timeScale = 0f;
+            controllActivate = false;
+
+            GameObject.Find("Sounds").GetComponent<SoundManager>().PauseAudio("IngameBGM");
+            GameObject.Find("Sounds").GetComponent<SoundManager>().PauseAudio("Countdown");
+        }
+
+        else if(Input.GetKeyDown(KeyCode.Escape) && ESCPressed)
+        {
+            ESCPressed = false;
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            Time.timeScale = 1f;
+            controllActivate = true;
+
+            GameObject.Find("Sounds").GetComponent<SoundManager>().PlayAudio("IngameBGM");
+            GameObject.Find("Sounds").GetComponent<SoundManager>().PlayAudio("Countdown");
+        }
     }
 
 

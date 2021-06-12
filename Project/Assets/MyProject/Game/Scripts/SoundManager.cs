@@ -17,6 +17,7 @@ public class SoundManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    // play manager
     public void PlayAudio(string name)
     {
         for(int i=0; i<BGMList.Length; i++) 
@@ -59,6 +60,7 @@ public class SoundManager : MonoBehaviour
         }
     }
 
+    // Setting
     public void ControllBGMVolume()
     {
         for(int i=0; i<BGMList.Length; i++)

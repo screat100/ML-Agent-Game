@@ -28,9 +28,10 @@ public static class GameManager
     public static int policeNum;
     public static int thiefNum;
 
-    public static int stage;
+    public static int round;
     public static int winNum_Police;
     public static int winNum_Thief;
+    public static Player.Team recentWinner;
 
     // for user setting
     public static float bgmVolume;

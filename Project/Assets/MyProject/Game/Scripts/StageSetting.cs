@@ -38,7 +38,6 @@ public class StageSetting : MonoBehaviour
 
     [HideInInspector] public int willCatchNum;      // Chaser가 잡을수있는 러너 수
 
-    int escapenum = 0;                              // 탈출 성공한 러너 수
 
     public TrainBrain train; // thief agent의 brain
 
@@ -76,10 +75,20 @@ public class StageSetting : MonoBehaviour
         GameManager.phase = GameManager.Phase.waitLoading;
         m_Player.transform.tag = GameManager.playersTeam.ToString();
 
+        GameManager.round++;
+
         /* ===      Initiate variables for police team    ===  */
         visitCoinList = GameObject.FindGameObjectsWithTag("areaDetector");
         coinNum = 0;
         catchedRunnerNum = 0;
+
+        /* ===      UI     ===  */
+        text_watingTime.gameObject.SetActive(true);
+        text_playingTime.gameObject.SetActive(false);
+
+        /* ===      sound   === */
+        GameObject.Find("Sounds").GetComponent<SoundManager>().PlayAudio("IngameBGM");
+        GameObject.Find("Sounds").GetComponent<SoundManager>().PlayAudio("Countdown");
 
         /* ===      Set Default Environment     ===  */
         timer = 0;
@@ -87,9 +96,6 @@ public class StageSetting : MonoBehaviour
         ResetScene();
 
         
-        /* ===      UI     ===  */
-        text_watingTime.gameObject.SetActive(true);
-        text_playingTime.gameObject.SetActive(false);
     }
 
     public void ResetScene()
@@ -137,7 +143,7 @@ public class StageSetting : MonoBehaviour
                 {
                     thiefAgents[i].SetActive(false);
                     thiefAgents[i].SetActive(true);
-                    chaserGroup.RegisterAgent(policeAgents[i].GetComponent<TheifAgent>());
+                    runnerGroup.RegisterAgent(thiefAgents[i].GetComponent<ThiefAgent>());
                 }
                 else 
                 {
@@ -151,7 +157,7 @@ public class StageSetting : MonoBehaviour
                 {
                     thiefAgents[i].SetActive(false);
                     thiefAgents[i].SetActive(true);
-                    chaserGroup.RegisterAgent(policeAgents[i].GetComponent<TheifAgent>());
+                    runnerGroup.RegisterAgent(thiefAgents[i].GetComponent<ThiefAgent>());
                 }
                 else 
                 {
@@ -172,14 +178,12 @@ public class StageSetting : MonoBehaviour
         findruby = false;
         DetectGoal = false;
         gameObject.GetComponent<CapsuleCollider>().isTrigger = false;
-        escapenum = 0;
 
         RandomPos_ruby();
     }
 
     private void Update() 
     {
-
         ManageStageTime();
 
         // Thief 중 한 명이 RaySensor를 통해 Goal(탈출구)를 발견하면 CapsuleCollider를 true로 만듦
@@ -248,7 +252,7 @@ public class StageSetting : MonoBehaviour
         {
             timer = 0f;
             
-            //POLICE TEAM WIN! (add plz)
+            EndGame(true);
 
             runnerGroup.GroupEpisodeInterrupted();
             chaserGroup.GroupEpisodeInterrupted();
@@ -258,7 +262,31 @@ public class StageSetting : MonoBehaviour
 
     }
 
+    /* ===                        finishing functions                          ===  */
 
+    public void EndGame(bool isPoliceWinner)
+    {
+        // police win
+        if(isPoliceWinner)
+        {
+            GameManager.winNum_Police++;
+            GameManager.recentWinner = Player.Team.police;
+            ChangePhaseToResult();
+        }
+
+        // thief win
+        else
+        {
+            GameManager.winNum_Thief++;
+            GameManager.recentWinner = Player.Team.thief;
+            ChangePhaseToResult();
+        }
+    }
+
+    public void ChangePhaseToResult()
+    {
+        SceneManager.LoadScene("Result");
+    }
 
     /* ===                        Externally executed functions                          ===  */
 
@@ -275,7 +303,7 @@ public class StageSetting : MonoBehaviour
     }
 
 
-    // 루비를 얻으면 thief에게 보상을 주는 함수 (외부에서 실행)
+    // thief 팀이 특정한 보상 조건을 달성한 상황일 때, thief 팀에게 group reward를 주는 함수
     public void Reward_Get(float reward)
     {
         runnerGroup.AddGroupReward(reward);
@@ -287,15 +315,17 @@ public class StageSetting : MonoBehaviour
     {
         bool flag = m_agent.GetComponent<ruby_runner>().hasruby;
 
-        escapenum++;
 
         if (flag)
         {
             runnerGroup.AddGroupReward(0.5f);
             runnerGroup.GroupEpisodeInterrupted();
 
-            if (train != TrainBrain.DetectGoalBrain)
+            if (train != TrainBrain.DetectGoalBrain) 
+            {
                 chaserGroup.GroupEpisodeInterrupted();
+                EndGame(false);
+            }
 
             ResetScene();
         }
@@ -332,6 +362,7 @@ public class StageSetting : MonoBehaviour
             runnerGroup.GroupEpisodeInterrupted();
             chaserGroup.GroupEpisodeInterrupted();
             ResetScene();
+            EndGame(true);
         }
 
     }
@@ -342,4 +373,12 @@ public class StageSetting : MonoBehaviour
         chaserGroup.AddGroupReward(1.0f / visitCoinList.Length);
         coinNum++;
     }
+
+
+
+
+
+
+
+
 }
