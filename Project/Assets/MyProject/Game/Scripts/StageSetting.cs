@@ -285,6 +285,7 @@ public class StageSetting : MonoBehaviour
 
     public void ChangePhaseToResult()
     {
+        m_Player.OnEditMode(false);
         SceneManager.LoadScene("Result");
     }
 

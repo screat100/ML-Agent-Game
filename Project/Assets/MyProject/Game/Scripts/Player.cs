@@ -185,11 +185,7 @@ public class Player : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.Escape) && !ESCPressed)
         {
-            ESCPressed = true;
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-            Time.timeScale = 0f;
-            controllActivate = false;
+            OnEditMode(true);
 
             GameObject.Find("Sounds").GetComponent<SoundManager>().PauseAudio("IngameBGM");
             GameObject.Find("Sounds").GetComponent<SoundManager>().PauseAudio("Countdown");
@@ -197,14 +193,30 @@ public class Player : MonoBehaviour
 
         else if(Input.GetKeyDown(KeyCode.Escape) && ESCPressed)
         {
+            OnEditMode(false);
+
+            GameObject.Find("Sounds").GetComponent<SoundManager>().PlayAudio("IngameBGM");
+            GameObject.Find("Sounds").GetComponent<SoundManager>().PlayAudio("Countdown");
+        }
+    }
+
+    public void OnEditMode(bool isModeOn)
+    {
+        if(isModeOn)
+        {
+            ESCPressed = true;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            Time.timeScale = 0f;
+            controllActivate = false;
+        }
+        else
+        {
             ESCPressed = false;
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
             Time.timeScale = 1f;
             controllActivate = true;
-
-            GameObject.Find("Sounds").GetComponent<SoundManager>().PlayAudio("IngameBGM");
-            GameObject.Find("Sounds").GetComponent<SoundManager>().PlayAudio("Countdown");
         }
     }
 

@@ -36,6 +36,10 @@ public static class GameManager
     // for user setting
     public static float bgmVolume;
     public static float sfxVolume;
+
+    // for game record
+    public static int policePlayerRecord;
+    public static float thiefPlayerRecord;
     
     
 }
