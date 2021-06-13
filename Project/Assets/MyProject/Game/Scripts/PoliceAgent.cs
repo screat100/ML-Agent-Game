@@ -12,7 +12,7 @@ public class PoliceAgent : Agent
     private StageSetting m_AreaSetting;
     private Rigidbody m_AgentRb;
     BehaviorParameters m_behaviorParameters;
-
+    AudioSource m_footstep;
     public float AgentSpeed = 100f;
 
 
@@ -22,8 +22,8 @@ public class PoliceAgent : Agent
         if (collision.transform.tag == "thief")
         {
             collision.gameObject.SetActive(false);
+            GameObject.Find("Sounds").GetComponent<SoundManager>().PlayAudio("Catch",transform.position);
             m_AreaSetting.GetReward_police();
-
         }
     }
 
@@ -41,10 +41,16 @@ public class PoliceAgent : Agent
         float velocity = m_AgentRb.velocity.magnitude;
 
         // animation
-        if (velocity > 0.05f)
+        if (velocity > 0.05f) {
+            if (!m_footstep.isPlaying)
+                m_footstep.Play();
             gameObject.GetComponent<Animator>().SetBool("Run", true);
+        }
         else
+        {
+            m_footstep.Pause();
             gameObject.GetComponent<Animator>().SetBool("Run", false);
+        }
 
         if (GameManager.phase == GameManager.Phase.play &&
         velocity < 0.75f)
@@ -58,6 +64,11 @@ public class PoliceAgent : Agent
     {
         m_AgentRb = GetComponent<Rigidbody>();
         m_behaviorParameters = gameObject.GetComponent<BehaviorParameters>();
+        GameObject instant_footstep=GameObject.Instantiate(GameObject.Find("Sounds").transform.Find("SFXs").transform.Find("Police_footstep")).gameObject;
+        instant_footstep.transform.name = "Police_footstep";
+        instant_footstep.transform.SetParent(transform);
+        instant_footstep.transform.localPosition = new Vector3(0, 0, 0);
+        m_footstep = gameObject.transform.Find("Police_footstep").GetComponent<AudioSource>();
     }
 
     public void MoveAgent(ActionSegment<int> act)

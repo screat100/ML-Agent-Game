@@ -38,7 +38,26 @@ public class SoundManager : MonoBehaviour
             }
         }
     }
+    public void PlayAudio(string name, Vector3 point)
+    {
+        for (int i = 0; i < BGMList.Length; i++)
+        {
+            if (BGMList[i].transform.name == name)
+            {
+                AudioSource.PlayClipAtPoint(BGMList[i].clip, point);
+                return;
+            }
+        }
 
+        for (int i = 0; i < SFXList.Length; i++)
+        {
+            if (SFXList[i].transform.name == name)
+            {
+                AudioSource.PlayClipAtPoint(SFXList[i].clip, point);
+                return;
+            }
+        }
+    }
     public void PauseAudio(string name)
     {
         for(int i=0; i<BGMList.Length; i++) 

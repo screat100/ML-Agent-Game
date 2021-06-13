@@ -353,7 +353,7 @@ public class StageSetting : MonoBehaviour
     {
         catchedRunnerNum++;
         willCatchNum--;
-
+        
         chaserGroup.AddGroupReward(2.0f / GameManager.thiefNum);
         runnerGroup.AddGroupReward(-2.0f / GameManager.thiefNum);
 
