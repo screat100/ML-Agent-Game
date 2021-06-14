@@ -47,6 +47,7 @@ public class ruby_runner : Agent
     Vector3 RunVector;
     //도망가야할 방향과 현재 내 각도의 차이
     float runAngle;
+    float ClosestPoliceDist;
     public override void Initialize()
     {
         m_AgentRb = GetComponent<Rigidbody>();
@@ -78,25 +79,26 @@ public class ruby_runner : Agent
     }
      private void FixedUpdate()
     {
-        ConfigureAgent();
-        Vector3 current_velocity=transform.InverseTransformDirection(m_AgentRb.velocity);
-        
-        if (SenseEnemy){
-            runAngle=Vector3.Angle(transform.forward,RunVector);
-            m_AreaSetting.Reward_Get(-runAngle/m_AreaSetting.MaxEnvironmentSteps);
-        }
-        else{
-            m_AreaSetting.Reward_Get(+1f/m_AreaSetting.MaxEnvironmentSteps);
+         ConfigureAgent();
+        Vector3 current_velocity = transform.InverseTransformDirection(m_AgentRb.velocity);
+        if (m_AreaSetting.train == ruby_AreaSetting.TrainBrain.RunBrain || m_AreaSetting.train == ruby_AreaSetting.TrainBrain.TotalBrain)
+        {
+            runAngle = 0f;
+            if (SenseEnemy)
+            {
+                runAngle = Vector3.Angle(transform.forward, RunVector);
+                m_AreaSetting.Reward_Get(-1 / m_AreaSetting.MaxEnvironmentSteps*10f);
+            }
         }
         
 
 
         
         if(current_velocity.z > m_AreaSetting.agentRunSpeed*0.75f){
-            m_AreaSetting.Reward_Get(+1f/m_AreaSetting.MaxEnvironmentSteps);
+            m_AreaSetting.Reward_Get(+1f/(m_AreaSetting.MaxEnvironmentSteps*(float)m_AreaSetting.runnerList.Count));
         }
-        else if(current_velocity.z < 0.0f){
-            m_AreaSetting.Reward_Get(-1f/m_AreaSetting.MaxEnvironmentSteps);
+        else{
+            m_AreaSetting.Reward_Get(-1f/(m_AreaSetting.MaxEnvironmentSteps*(float)m_AreaSetting.runnerList.Count));
         }
 
         if(m_AreaSetting.DetectGoal&&hasruby){
@@ -164,12 +166,29 @@ public class ruby_runner : Agent
         Collider[] Enemys=Physics.OverlapSphere(transform.position,m_AreaSetting.RunnerDetectRadius, m_chaserlayermask);
         //도망 방향벡터
         RunVector= Vector3.zero;
+
+        //감지된 가장가까운 적과의 거리
+        ClosestPoliceDist=m_AreaSetting.RunnerDetectRadius+1f;
         if(Enemys.Length>0){
             SenseEnemy=true;
+            /* 감지된 적을 미니맵에 표시 */
+            foreach(var Enemy in Enemys){
+                
+            }
+
+            /* 주변에 위치한 적의 방향을 파악하고 도망갈 방향 지정 */
             foreach(var item in Enemys){
                 RunVector+=transform.localPosition-item.transform.localPosition;
             }
             RunVector=RunVector.normalized;
+
+            /* 가장 가까운 적과의 거리 */
+            foreach(var item in Enemys){
+                float dist=Vector3.Distance(transform.position,item.transform.position);
+                if(ClosestPoliceDist>dist){
+                    ClosestPoliceDist=dist;
+                }
+            }
             // RaycastHit hit;
             // Vector3 dir=Enemys[0].transform.position-transform.position;
             // if(Physics.Raycast(transform.position+Vector3.up, dir, out hit)){
@@ -178,7 +197,6 @@ public class ruby_runner : Agent
             //     }
             // }
         }
-
     }
 
     public void ConfigureAgent()
@@ -266,14 +284,20 @@ public class ruby_runner : Agent
             sensor.AddObservation(m_AreaSetting.DetectGoal);
         }
         else if(m_AreaSetting.train==ruby_AreaSetting.TrainBrain.RunBrain){
+            Vector3 cur_velocity=transform.InverseTransformDirection(m_AgentRb.velocity);
             sensor.AddObservation(SenseEnemy);
-            sensor.AddObservation(transform.InverseTransformDirection(m_AgentRb.velocity));
+            sensor.AddObservation(cur_velocity.x);
+            sensor.AddObservation(cur_velocity.z);
+            sensor.AddObservation(ClosestPoliceDist);
             sensor.AddObservation(runAngle);
         }
         else if(m_AreaSetting.train==ruby_AreaSetting.TrainBrain.TotalBrain){
             if(SenseEnemy){
+                Vector3 cur_velocity=transform.InverseTransformDirection(m_AgentRb.velocity);
                 sensor.AddObservation(SenseEnemy);
-                sensor.AddObservation(transform.InverseTransformDirection(m_AgentRb.velocity));
+                sensor.AddObservation(cur_velocity.x);
+                sensor.AddObservation(cur_velocity.z);
+                sensor.AddObservation(ClosestPoliceDist);
                 sensor.AddObservation(runAngle);
             }
             else if(m_AreaSetting.findruby){

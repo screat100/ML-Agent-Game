@@ -3180,10 +3180,10 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 5022602860645237092, guid: 76e4d20c797b79b4cb0f56106431800a, type: 3}
+  m_Model: {fileID: 0}
   m_InferenceDevice: 2
   m_BehaviorType: 0
-  m_BehaviorName: rubyrun
+  m_BehaviorName: rubyrun_RunModel
   TeamId: 1
   m_UseChildSensors: 1
   m_UseChildActuators: 1
@@ -3223,9 +3223,8 @@ MonoBehaviour:
     type: 3}
   DetectRuby: {fileID: 5022602860645237092, guid: 76e4d20c797b79b4cb0f56106431800a,
     type: 3}
-  RunModel: {fileID: 5022602860645237092, guid: 56309d1ba802db64c8c984f3ec720572,
+  RunModel: {fileID: 5022602860645237092, guid: 4051af03289d3ed4998b4fc5607ba23f,
     type: 3}
-  ruby: {fileID: 4414584429684312159}
   team: 1
   m_chaserlayermask:
     serializedVersion: 2
