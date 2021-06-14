@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
@@ -55,7 +57,9 @@ public class Player : MonoBehaviour
 
         m_StageSetting = GameObject.Find("GameArea").GetComponent<StageSetting>();
 
-        switch(GameManager.playersTeam)
+
+
+        switch (GameManager.instance.playersTeam)
         {
             case Team.police:
                 team = Team.police;
@@ -67,21 +71,31 @@ public class Player : MonoBehaviour
 
         TurnOnSpotLight();
 
-        if(GameManager.playersTeam == Player.Team.thief)
+        if(GameManager.instance.playersTeam == Player.Team.thief)
         {
-            gameObject.transform.position = GameObject.Find("GameArea").GetComponent<StageSetting>().thiefAgents[GameManager.thiefNum-1].transform.position;
+            gameObject.transform.position = GameObject.Find("GameArea").GetComponent<StageSetting>().thiefAgents[GameManager.instance.thiefNum-1].transform.position;
         }
         else
         {
-            gameObject.transform.position = GameObject.Find("GameArea").GetComponent<StageSetting>().policeAgents[GameManager.policeNum-1].transform.position;
+            gameObject.transform.position = GameObject.Find("GameArea").GetComponent<StageSetting>().policeAgents[GameManager.instance.policeNum-1].transform.position;
         }
 
-
-        
-
+        SetFootStep();
 
     }
-
+    void SetFootStep()
+    {
+        if (GameManager.instance.playersTeam == Player.Team.thief)
+        {
+            /* 역할별 FootStep */
+            audio_Footstep.clip = GameObject.Find("Sounds").transform.Find("SFXs").transform.Find("Thief_footstep").gameObject.GetComponent<AudioSource>().clip;
+        }
+        else
+        {
+            /* 역할별 FootStep */
+            audio_Footstep.clip = GameObject.Find("Sounds").transform.Find("SFXs").transform.Find("Police_footstep").gameObject.GetComponent<AudioSource>().clip;
+        }
+    }
     void Update()
     {
         PushESCKey();
@@ -98,7 +112,23 @@ public class Player : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (transform.tag == "police" && collision.transform.tag == "thief")
+        if (transform.tag == "thief" && collision.transform.tag == "police")
+        {
+            for (int i=0; i< m_StageSetting.thiefAgents.Length; i++)
+            {
+                if (m_StageSetting.thiefAgents[i].activeSelf == true)
+                {
+                    transform.position = m_StageSetting.thiefAgents[i].transform.position; // 활동 중인 thief 중 하나로 자리 교체
+                    m_StageSetting.thiefAgents[i].SetActive(false); // 그 자리에 있던 thiefAgent 비활성화
+                    //UI 틀기
+                    change();
+                    Invoke("change_exit", 2);
+                    break;
+                }
+            }
+        }
+
+        if(transform.tag == "police" && collision.transform.tag == "thief")
         {
             collision.gameObject.SetActive(false);
             m_StageSetting.GetReward_police();
@@ -111,6 +141,15 @@ public class Player : MonoBehaviour
             other.gameObject.SetActive(false);
             m_StageSetting.NewAreaVisitReward();
         }
+    }
+
+    private void change()
+    {
+        GameObject.Find("UI_Playing").transform.Find("change").gameObject.SetActive(true);
+    }
+    private void change_exit()
+    {
+        GameObject.Find("UI_Playing").transform.Find("change").gameObject.SetActive(false);
     }
 
     /*      ===         functions that run on Start()         === */
@@ -185,11 +224,7 @@ public class Player : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.Escape) && !ESCPressed)
         {
-            ESCPressed = true;
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-            Time.timeScale = 0f;
-            controllActivate = false;
+            OnEditMode(true);
 
             GameObject.Find("Sounds").GetComponent<SoundManager>().PauseAudio("IngameBGM");
             GameObject.Find("Sounds").GetComponent<SoundManager>().PauseAudio("Countdown");
@@ -197,14 +232,30 @@ public class Player : MonoBehaviour
 
         else if(Input.GetKeyDown(KeyCode.Escape) && ESCPressed)
         {
+            OnEditMode(false);
+
+            GameObject.Find("Sounds").GetComponent<SoundManager>().PlayAudio("IngameBGM");
+            GameObject.Find("Sounds").GetComponent<SoundManager>().PlayAudio("Countdown");
+        }
+    }
+
+    public void OnEditMode(bool isModeOn)
+    {
+        if(isModeOn)
+        {
+            ESCPressed = true;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            Time.timeScale = 0f;
+            controllActivate = false;
+        }
+        else
+        {
             ESCPressed = false;
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
             Time.timeScale = 1f;
             controllActivate = true;
-
-            GameObject.Find("Sounds").GetComponent<SoundManager>().PlayAudio("IngameBGM");
-            GameObject.Find("Sounds").GetComponent<SoundManager>().PlayAudio("Countdown");
         }
     }
 
@@ -212,7 +263,7 @@ public class Player : MonoBehaviour
     void PlayHeartBeatSound()
     {
         Collider[] sensedEnemise = Physics.OverlapSphere(transform.position, heartbeatRange, m_PoliceLayer);
-        if(GameManager.playersTeam == Player.Team.thief
+        if(GameManager.instance.playersTeam == Player.Team.thief
         && sensedEnemise.Length > 0)
         {
             if(!audio_Hearbeat.isPlaying)

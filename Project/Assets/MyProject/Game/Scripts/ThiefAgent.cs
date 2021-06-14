@@ -76,7 +76,17 @@ public class ThiefAgent : Agent
         }
 
     }
-     private void FixedUpdate()
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.transform.tag == "police")
+        {
+            gameObject.SetActive(false);
+        }
+    }
+
+
+    private void FixedUpdate()
     {
         ConfigureAgent();
         Vector3 current_velocity=transform.InverseTransformDirection(m_AgentRb.velocity);
