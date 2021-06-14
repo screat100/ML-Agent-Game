@@ -104,20 +104,14 @@ public class Player : MonoBehaviour
         {
             for (int i=0; i< m_StageSetting.thiefAgents.Length; i++)
             {
-                if (m_StageSetting.thiefAgents[i].activeSelf == true
-                    && transform.position != m_StageSetting.thiefAgents[i].transform.position)
+                if (m_StageSetting.thiefAgents[i].activeSelf == true)
                 {
                     transform.position = m_StageSetting.thiefAgents[i].transform.position; // 활동 중인 thief 중 하나로 자리 교체
                     m_StageSetting.thiefAgents[i].SetActive(false); // 그 자리에 있던 thiefAgent 비활성화
                     //UI 틀기
                     change();
+                    Invoke("change_exit", 2);
                     break;
-                }
-                m_StageSetting.GetReward_police();
-                if ( i == m_StageSetting.thiefAgents.Length)
-                {
-                    Debug.Log("result");
-                    SceneManager.LoadScene("Result");
                 }
             }
         }
@@ -140,6 +134,10 @@ public class Player : MonoBehaviour
     private void change()
     {
         GameObject.Find("UI_Playing").transform.Find("change").gameObject.SetActive(true);
+    }
+    private void change_exit()
+    {
+        GameObject.Find("UI_Playing").transform.Find("change").gameObject.SetActive(false);
     }
 
     /*      ===         functions that run on Start()         === */
