@@ -57,7 +57,9 @@ public class Player : MonoBehaviour
 
         m_StageSetting = GameObject.Find("GameArea").GetComponent<StageSetting>();
 
-        switch(GameManager.instance.playersTeam)
+
+
+        switch (GameManager.instance.playersTeam)
         {
             case Team.police:
                 team = Team.police;
@@ -78,12 +80,22 @@ public class Player : MonoBehaviour
             gameObject.transform.position = GameObject.Find("GameArea").GetComponent<StageSetting>().policeAgents[GameManager.instance.policeNum-1].transform.position;
         }
 
-
-        
-
+        SetFootStep();
 
     }
-
+    void SetFootStep()
+    {
+        if (GameManager.instance.playersTeam == Player.Team.thief)
+        {
+            /* 역할별 FootStep */
+            audio_Footstep.clip = GameObject.Find("Sounds").transform.Find("SFXs").transform.Find("Thief_footstep").gameObject.GetComponent<AudioSource>().clip;
+        }
+        else
+        {
+            /* 역할별 FootStep */
+            audio_Footstep.clip = GameObject.Find("Sounds").transform.Find("SFXs").transform.Find("Police_footstep").gameObject.GetComponent<AudioSource>().clip;
+        }
+    }
     void Update()
     {
         PushESCKey();
