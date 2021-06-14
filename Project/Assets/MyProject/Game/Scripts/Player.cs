@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
@@ -98,7 +100,29 @@ public class Player : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (transform.tag == "police" && collision.transform.tag == "thief")
+        if (transform.tag == "thief" && collision.transform.tag == "police")
+        {
+            for (int i=0; i< m_StageSetting.thiefAgents.Length; i++)
+            {
+                if (m_StageSetting.thiefAgents[i].activeSelf == true
+                    && transform.position != m_StageSetting.thiefAgents[i].transform.position)
+                {
+                    transform.position = m_StageSetting.thiefAgents[i].transform.position; // 활동 중인 thief 중 하나로 자리 교체
+                    m_StageSetting.thiefAgents[i].SetActive(false); // 그 자리에 있던 thiefAgent 비활성화
+                    //UI 틀기
+                    change();
+                    break;
+                }
+                m_StageSetting.GetReward_police();
+                if ( i == m_StageSetting.thiefAgents.Length)
+                {
+                    Debug.Log("result");
+                    SceneManager.LoadScene("Result");
+                }
+            }
+        }
+
+        if(transform.tag == "police" && collision.transform.tag == "thief")
         {
             collision.gameObject.SetActive(false);
             m_StageSetting.GetReward_police();
@@ -111,6 +135,11 @@ public class Player : MonoBehaviour
             other.gameObject.SetActive(false);
             m_StageSetting.NewAreaVisitReward();
         }
+    }
+
+    private void change()
+    {
+        GameObject.Find("UI_Playing").transform.Find("change").gameObject.SetActive(true);
     }
 
     /*      ===         functions that run on Start()         === */

@@ -21,7 +21,7 @@ public class PoliceAgent : Agent
     {
         if (collision.transform.tag == "thief")
         {
-            collision.gameObject.SetActive(false);
+            //collision.gameObject.SetActive(false);
             GameObject.Find("Sounds").GetComponent<SoundManager>().PlayAudio("Catch",transform.position);
             m_AreaSetting.GetReward_police();
         }
