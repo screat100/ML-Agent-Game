@@ -9,17 +9,20 @@ public class UI_Ingame : MonoBehaviour
 
     /* 미니 맵 */
     Camera m_minimapCam;
+
     /* 미니맵 cullingMask 역할별 Layer설정*/
     string[] thief_cullingLayer = new string[] { "goal", "thief_img", "wall" };
     string[] police_cullingLayer = new string[] {"police_img", "wall" };
+
     void Start()
     {
         // Listing UI Objects
         texts = GameObject.Find("texts").GetComponentsInChildren<Text>();
         m_minimapCam = GameObject.Find("Minimap_Camera").GetComponent<Camera>();
+
         // 팀에 따라 게임 목표 메시지를 다르게 표기
         Text goalText = FindTextObject("text_goalMessage");
-        if(GameManager.playersTeam == Player.Team.police)
+        if(GameManager.instance.playersTeam == Player.Team.police)
         {
             goalText.text = "모든 도둑을 잡아라!";
             m_minimapCam.cullingMask = LayerMask.GetMask(police_cullingLayer);
@@ -31,9 +34,9 @@ public class UI_Ingame : MonoBehaviour
         }
 
         // 라운드 및 승 수 정보 표기
-        FindTextObject("text_round").text = "Round " + GameManager.round.ToString();
-        FindTextObject("text_winnumOfPolice").text = GameManager.winNum_Police.ToString();
-        FindTextObject("text_winnumOfThief").text = GameManager.winNum_Thief.ToString();
+        FindTextObject("text_round").text = "Round " + GameManager.instance.round.ToString();
+        FindTextObject("text_winnumOfPolice").text = GameManager.instance.winNum_Police.ToString();
+        FindTextObject("text_winnumOfThief").text = GameManager.instance.winNum_Thief.ToString();
         FindTextObject("text_remainedThief").text = GameObject.Find("GameArea").GetComponent<StageSetting>().willCatchNum.ToString();
     }
     private void FixedUpdate()

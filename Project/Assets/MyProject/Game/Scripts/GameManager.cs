@@ -3,8 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public static class GameManager
+public class GameManager : MonoBehaviour
 {
+
+    public static GameManager instance;
+
+    private void Awake()
+    {
+        instance = this;
+
+        DontDestroyOnLoad(gameObject);
+    }
+
     /* ===      Sub Classes       === */
     public enum Phase
     {
@@ -21,25 +31,25 @@ public static class GameManager
 
 
     // for stage
-    public static Player.Team playersTeam;
+    public Player.Team playersTeam;
 
-    public static Phase phase;
+    public Phase phase;
 
-    public static int policeNum;
-    public static int thiefNum;
+    public int policeNum = 2;
+    public int thiefNum = 4;
 
-    public static int round;
-    public static int winNum_Police;
-    public static int winNum_Thief;
-    public static Player.Team recentWinner;
+    public int round = 0;
+    public int winNum_Police = 0;
+    public int winNum_Thief = 0;
+    public Player.Team recentWinner;
 
     // for user setting
-    public static float bgmVolume;
-    public static float sfxVolume;
+    public float bgmVolume = 1;
+    public float sfxVolume = 1;
 
     // for game record
-    public static int policePlayerRecord;
-    public static float thiefPlayerRecord;
+    public int policePlayerRecord;
+    public float thiefPlayerRecord;
     
     
 }

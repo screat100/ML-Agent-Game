@@ -52,10 +52,10 @@ public class PoliceAgent : Agent
             gameObject.GetComponent<Animator>().SetBool("Run", false);
         }
 
-        if (GameManager.phase == GameManager.Phase.play &&
+        if (GameManager.instance.phase == GameManager.Phase.play &&
         velocity < 0.75f)
             AddReward(-1.0f / m_AreaSetting.maxPlayTime*50);
-        else if (GameManager.phase == GameManager.Phase.play)
+        else if (GameManager.instance.phase == GameManager.Phase.play)
             AddReward(1.0f / m_AreaSetting.maxPlayTime*50);
 
     }
@@ -101,7 +101,7 @@ public class PoliceAgent : Agent
 
         transform.Rotate(rotateDir, Time.fixedDeltaTime * 200f);
 
-        if (GameManager.phase == GameManager.Phase.play && 
+        if (GameManager.instance.phase == GameManager.Phase.play && 
             m_AgentRb.velocity.magnitude <= m_AreaSetting.agentRunSpeed * 0.95f)
         {
             m_AgentRb.AddForce(dirToGo * AgentSpeed);

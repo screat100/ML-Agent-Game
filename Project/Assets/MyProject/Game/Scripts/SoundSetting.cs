@@ -7,11 +7,13 @@ public class SoundSetting : MonoBehaviour
 {
     public void ChangeBGMVolume()
     {
+        // apply
         Slider bgmSlider = GameObject.Find("slider_bgm").GetComponent<Slider>();
-        GameManager.bgmVolume = bgmSlider.value;
+        GameManager.instance.bgmVolume = bgmSlider.value;
 
+        // setting ui
         Text text_bgm = GameObject.Find("text_bgm").GetComponent<Text>();
-        int bgmVolume = (int)(GameManager.bgmVolume*100);
+        int bgmVolume = (int)(GameManager.instance.bgmVolume*100);
         text_bgm.text = bgmVolume.ToString() + "%";
 
         GameObject.Find("Sounds").GetComponent<SoundManager>().ControllBGMVolume();
@@ -19,11 +21,13 @@ public class SoundSetting : MonoBehaviour
 
     public void ChangeSFXVolume()
     {
+        // apply
         Slider sfxSlider = GameObject.Find("slider_sfx").GetComponent<Slider>();
-        GameManager.sfxVolume = sfxSlider.value;
+        GameManager.instance.sfxVolume = sfxSlider.value;
 
+        // setting ui 
         Text text_sfx = GameObject.Find("text_sfx").GetComponent<Text>();
-        int sfxVolume = (int)(GameManager.sfxVolume*100);
+        int sfxVolume = (int)(GameManager.instance.sfxVolume*100);
         text_sfx.text = sfxVolume.ToString() + "%";
 
         GameObject.Find("Sounds").GetComponent<SoundManager>().ControllSFXVolume();

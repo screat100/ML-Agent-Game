@@ -25,13 +25,13 @@ public class UI_Result : MonoBehaviour
 
 
         // ========= final result ===============
-        if(GameManager.winNum_Police >=2 || GameManager.winNum_Thief >=2)
+        if(GameManager.instance.winNum_Police >=2 || GameManager.instance.winNum_Thief >=2)
         {
             UI_roundResult.SetActive(false);
             UI_finalResult.SetActive(true);
 
             // win
-            if(GameManager.recentWinner == GameManager.playersTeam)
+            if(GameManager.instance.recentWinner == GameManager.instance.playersTeam)
             {
                 GameObject.Find("image_win").SetActive(true);
                 GameObject.Find("image_lose").SetActive(false);
@@ -47,19 +47,19 @@ public class UI_Result : MonoBehaviour
             }
 
             // score
-            GameObject.Find("text_police").GetComponent<Text>().text = GameManager.winNum_Police.ToString();
-            GameObject.Find("text_thief").GetComponent<Text>().text = GameManager.winNum_Thief.ToString();
+            GameObject.Find("text_police").GetComponent<Text>().text = GameManager.instance.winNum_Police.ToString();
+            GameObject.Find("text_thief").GetComponent<Text>().text = GameManager.instance.winNum_Thief.ToString();
 
             // record
-            if(GameManager.playersTeam == Player.Team.police)
+            if(GameManager.instance.playersTeam == Player.Team.police)
             {
-                GameObject.Find("text_record").GetComponent<Text>().text = "내가 잡은 도둑 수 : " + GameManager.policePlayerRecord.ToString();
+                GameObject.Find("text_record").GetComponent<Text>().text = "내가 잡은 도둑 수 : " + GameManager.instance.policePlayerRecord.ToString();
             }
             else
             {
-                int min = (int)GameManager.thiefPlayerRecord / 60;
-                int sec = (int)GameManager.thiefPlayerRecord - 60*min;
-                int milsec = (int)(GameManager.thiefPlayerRecord - (float)((int)GameManager.thiefPlayerRecord)*100);
+                int min = (int)GameManager.instance.thiefPlayerRecord / 60;
+                int sec = (int)GameManager.instance.thiefPlayerRecord - 60*min;
+                int milsec = (int)(GameManager.instance.thiefPlayerRecord - (float)((int)GameManager.instance.thiefPlayerRecord)*100);
                 GameObject.Find("text_record").GetComponent<Text>().text = "소요 시간 : " + min.ToString() + "분 " + sec.ToString() + "초 " + milsec.ToString();
             }
 
@@ -73,7 +73,7 @@ public class UI_Result : MonoBehaviour
 
             // n-round text
             Text roundText = GameObject.Find("text_round").GetComponent<Text>();
-            switch(GameManager.round)
+            switch(GameManager.instance.round)
             {
                 case 1:
                     roundText.text = "1st Round";
@@ -86,7 +86,7 @@ public class UI_Result : MonoBehaviour
 
 
             // win
-            if(GameManager.recentWinner == GameManager.playersTeam)
+            if(GameManager.instance.recentWinner == GameManager.instance.playersTeam)
             {
                 GameObject.Find("text_winorlose").GetComponent<Text>().text = "WIN";
                 soundManager.PlayAudio("Win");
@@ -100,8 +100,8 @@ public class UI_Result : MonoBehaviour
             }
 
             // score
-            GameObject.Find("text_police").GetComponent<Text>().text = GameManager.winNum_Police.ToString();
-            GameObject.Find("text_thief").GetComponent<Text>().text = GameManager.winNum_Thief.ToString();
+            GameObject.Find("text_police").GetComponent<Text>().text = GameManager.instance.winNum_Police.ToString();
+            GameObject.Find("text_thief").GetComponent<Text>().text = GameManager.instance.winNum_Thief.ToString();
         }
     }
 
@@ -114,26 +114,25 @@ public class UI_Result : MonoBehaviour
 
     public void Replay()
     {
-        GameManager.round = 0;
-        GameManager.winNum_Thief = 0;
-        GameManager.winNum_Police = 0;
-        GameManager.policePlayerRecord = 0;
-        GameManager.thiefPlayerRecord = 0;
-        GameManager.phase = GameManager.Phase.selectTeam;
+        GameManager.instance.round = 0;
+        GameManager.instance.winNum_Thief = 0;
+        GameManager.instance.winNum_Police = 0;
+        GameManager.instance.policePlayerRecord = 0;
+        GameManager.instance.thiefPlayerRecord = 0;
+        GameManager.instance.phase = GameManager.Phase.selectTeam;
 
         Destroy(soundManager.gameObject);
         SceneManager.LoadScene("MainMenu");
-        GameObject.Find("@UIManager").GetComponent<MainMenu>().GoToSelectTeam();
     }
 
     public void GoToMainMenu()
     {
-        GameManager.round = 0;
-        GameManager.winNum_Thief = 0;
-        GameManager.winNum_Police = 0;
-        GameManager.policePlayerRecord = 0;
-        GameManager.thiefPlayerRecord = 0;
-        GameManager.phase = GameManager.Phase.selectTeam;
+        GameManager.instance.round = 0;
+        GameManager.instance.winNum_Thief = 0;
+        GameManager.instance.winNum_Police = 0;
+        GameManager.instance.policePlayerRecord = 0;
+        GameManager.instance.thiefPlayerRecord = 0;
+        GameManager.instance.phase = GameManager.Phase.selectTeam;
 
         Destroy(soundManager.gameObject);
         SceneManager.LoadScene("MainMenu");

@@ -72,10 +72,10 @@ public class StageSetting : MonoBehaviour
 
     void Start()
     {
-        GameManager.phase = GameManager.Phase.waitLoading;
-        m_Player.transform.tag = GameManager.playersTeam.ToString();
+        GameManager.instance.phase = GameManager.Phase.waitLoading;
+        m_Player.transform.tag = GameManager.instance.playersTeam.ToString();
 
-        GameManager.round++;
+        GameManager.instance.round++;
 
         /* ===      Initiate variables for police team    ===  */
         visitCoinList = GameObject.FindGameObjectsWithTag("areaDetector");
@@ -92,7 +92,7 @@ public class StageSetting : MonoBehaviour
 
         /* ===      Set Default Environment     ===  */
         timer = 0;
-        willCatchNum = GameManager.thiefNum;
+        willCatchNum = GameManager.instance.thiefNum;
         ResetScene();
 
         
@@ -106,9 +106,9 @@ public class StageSetting : MonoBehaviour
         // reset each agents group
         for(int i=0; i<3; i++)
         {
-            if(GameManager.playersTeam == Player.Team.police)
+            if(GameManager.instance.playersTeam == Player.Team.police)
             {
-                if(i <GameManager.policeNum-1)
+                if(i <GameManager.instance.policeNum-1)
                 {
                     policeAgents[i].SetActive(false);
                     policeAgents[i].SetActive(true);
@@ -122,7 +122,7 @@ public class StageSetting : MonoBehaviour
 
             else 
             {
-                if(i <GameManager.policeNum)
+                if(i <GameManager.instance.policeNum)
                 {
                     policeAgents[i].SetActive(false);
                     policeAgents[i].SetActive(true);
@@ -137,9 +137,9 @@ public class StageSetting : MonoBehaviour
 
         for(int i=0; i<6; i++) 
         { 
-            if(GameManager.playersTeam == Player.Team.thief)
+            if(GameManager.instance.playersTeam == Player.Team.thief)
             {
-                if(i <GameManager.thiefNum -1)
+                if(i <GameManager.instance.thiefNum -1)
                 {
                     thiefAgents[i].SetActive(false);
                     thiefAgents[i].SetActive(true);
@@ -153,7 +153,7 @@ public class StageSetting : MonoBehaviour
 
             else 
             {
-                if(i <GameManager.thiefNum)
+                if(i <GameManager.instance.thiefNum)
                 {
                     thiefAgents[i].SetActive(false);
                     thiefAgents[i].SetActive(true);
@@ -172,7 +172,7 @@ public class StageSetting : MonoBehaviour
         catchedRunnerNum = 0;
 
         // Set Default Environment  
-        willCatchNum = GameManager.thiefNum;
+        willCatchNum = GameManager.instance.thiefNum;
 
         
         findruby = false;
@@ -202,7 +202,7 @@ public class StageSetting : MonoBehaviour
 
         // ============= UI ============= 
 
-        switch(GameManager.phase)
+        switch(GameManager.instance.phase)
         {
         case GameManager.Phase.waitLoading:
             text_watingTime.text = ((int)(maxLoadingTime - timer)).ToString();
@@ -221,24 +221,24 @@ public class StageSetting : MonoBehaviour
         }
 
         // change phase : loading -> thief move only
-        if(GameManager.phase == GameManager.Phase.waitLoading
+        if(GameManager.instance.phase == GameManager.Phase.waitLoading
         && timer >= maxLoadingTime)
         {
             timer = 0f;
-            GameManager.phase = GameManager.Phase.policesWating;
+            GameManager.instance.phase = GameManager.Phase.policesWating;
 
-            if(GameManager.playersTeam == Player.Team.thief)
+            if(GameManager.instance.playersTeam == Player.Team.thief)
             {
                 m_Player.ActivatePlayersControll();
             }
         }
 
         // change phase : thief move only --> play
-        else if(GameManager.phase == GameManager.Phase.policesWating
+        else if(GameManager.instance.phase == GameManager.Phase.policesWating
         && timer >= maxPolicesWatingTime)
         {
             timer = 0f;
-            GameManager.phase = GameManager.Phase.play;
+            GameManager.instance.phase = GameManager.Phase.play;
             
             text_watingTime.gameObject.SetActive(false);
             text_playingTime.gameObject.SetActive(true);
@@ -247,7 +247,7 @@ public class StageSetting : MonoBehaviour
         }
         
         // change phase : time over -> police win! 
-        else if(GameManager.phase == GameManager.Phase.play
+        else if(GameManager.instance.phase == GameManager.Phase.play
         && timer >= maxPlayTime)
         {
             timer = 0f;
@@ -257,7 +257,7 @@ public class StageSetting : MonoBehaviour
             runnerGroup.GroupEpisodeInterrupted();
             chaserGroup.GroupEpisodeInterrupted();
 
-            GameManager.phase = GameManager.Phase.play;
+            GameManager.instance.phase = GameManager.Phase.play;
         }
 
     }
@@ -269,16 +269,16 @@ public class StageSetting : MonoBehaviour
         // police win
         if(isPoliceWinner)
         {
-            GameManager.winNum_Police++;
-            GameManager.recentWinner = Player.Team.police;
+            GameManager.instance.winNum_Police++;
+            GameManager.instance.recentWinner = Player.Team.police;
             ChangePhaseToResult();
         }
 
         // thief win
         else
         {
-            GameManager.winNum_Thief++;
-            GameManager.recentWinner = Player.Team.thief;
+            GameManager.instance.winNum_Thief++;
+            GameManager.instance.recentWinner = Player.Team.thief;
             ChangePhaseToResult();
         }
     }
@@ -354,11 +354,11 @@ public class StageSetting : MonoBehaviour
         catchedRunnerNum++;
         willCatchNum--;
         
-        chaserGroup.AddGroupReward(2.0f / GameManager.thiefNum);
-        runnerGroup.AddGroupReward(-2.0f / GameManager.thiefNum);
+        chaserGroup.AddGroupReward(2.0f / GameManager.instance.thiefNum);
+        runnerGroup.AddGroupReward(-2.0f / GameManager.instance.thiefNum);
 
         // All runners are catched => chaser win!
-        if (catchedRunnerNum >= GameManager.thiefNum)
+        if (catchedRunnerNum >= GameManager.instance.thiefNum)
         {
             runnerGroup.GroupEpisodeInterrupted();
             chaserGroup.GroupEpisodeInterrupted();

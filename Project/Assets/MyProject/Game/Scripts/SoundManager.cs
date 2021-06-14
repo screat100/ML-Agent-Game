@@ -84,14 +84,14 @@ public class SoundManager : MonoBehaviour
     {
         for(int i=0; i<BGMList.Length; i++)
         {
-            BGMList[i].volume = GameManager.bgmVolume;
+            BGMList[i].volume = GameManager.instance.bgmVolume;
         }
     }
     public void ControllSFXVolume()
     {
         for(int i=0; i<SFXList.Length; i++)
         {
-            SFXList[i].volume = GameManager.sfxVolume;
+            SFXList[i].volume = GameManager.instance.sfxVolume;
         }
     }
 

@@ -55,7 +55,7 @@ public class Player : MonoBehaviour
 
         m_StageSetting = GameObject.Find("GameArea").GetComponent<StageSetting>();
 
-        switch(GameManager.playersTeam)
+        switch(GameManager.instance.playersTeam)
         {
             case Team.police:
                 team = Team.police;
@@ -67,13 +67,13 @@ public class Player : MonoBehaviour
 
         TurnOnSpotLight();
 
-        if(GameManager.playersTeam == Player.Team.thief)
+        if(GameManager.instance.playersTeam == Player.Team.thief)
         {
-            gameObject.transform.position = GameObject.Find("GameArea").GetComponent<StageSetting>().thiefAgents[GameManager.thiefNum-1].transform.position;
+            gameObject.transform.position = GameObject.Find("GameArea").GetComponent<StageSetting>().thiefAgents[GameManager.instance.thiefNum-1].transform.position;
         }
         else
         {
-            gameObject.transform.position = GameObject.Find("GameArea").GetComponent<StageSetting>().policeAgents[GameManager.policeNum-1].transform.position;
+            gameObject.transform.position = GameObject.Find("GameArea").GetComponent<StageSetting>().policeAgents[GameManager.instance.policeNum-1].transform.position;
         }
 
 
@@ -224,7 +224,7 @@ public class Player : MonoBehaviour
     void PlayHeartBeatSound()
     {
         Collider[] sensedEnemise = Physics.OverlapSphere(transform.position, heartbeatRange, m_PoliceLayer);
-        if(GameManager.playersTeam == Player.Team.thief
+        if(GameManager.instance.playersTeam == Player.Team.thief
         && sensedEnemise.Length > 0)
         {
             if(!audio_Hearbeat.isPlaying)
