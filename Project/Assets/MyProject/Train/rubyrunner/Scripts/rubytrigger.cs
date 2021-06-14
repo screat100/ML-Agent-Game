@@ -5,6 +5,7 @@ using UnityEngine;
 public class rubytrigger : MonoBehaviour
 {
     public StageSetting m_areaSetting;
+    private Vector3 dropSector;
     // Start is called before the first frame update
     void Start()
     {
@@ -23,7 +24,11 @@ public class rubytrigger : MonoBehaviour
     {
         if(other.gameObject.tag=="thief")
         {
-            other.gameObject.GetComponent<ruby_runner>().hasruby=true;
+            if (other.gameObject.name == "Player")
+                other.gameObject.GetComponent<Player>().hasruby = true;
+            else
+                other.gameObject.GetComponent<ThiefAgent>().hasruby = true;
+
             m_areaSetting.findruby=true;
             for(int i=0;i<m_areaSetting.thiefAgents.Length;i++){
                 if(m_areaSetting.thiefAgents[i]==other.gameObject){
@@ -37,11 +42,18 @@ public class rubytrigger : MonoBehaviour
     }
     public void resetPlace(int spawnSector){
         gameObject.SetActive(true);
+
         var spawnTransform = m_areaSetting.Sectors[spawnSector].transform;
         var xRange = spawnTransform.localScale.x / 2.1f;
         var zRange = spawnTransform.localScale.z / 2.1f;
 
         transform.position = new Vector3(Random.Range(-xRange, xRange), 0.5f, Random.Range(-zRange, zRange))
             + spawnTransform.position;
+        dropSector = transform.position;
+    }
+    public void droptheRuby()
+    {
+        gameObject.SetActive(true);
+        transform.position = dropSector;
     }
 }

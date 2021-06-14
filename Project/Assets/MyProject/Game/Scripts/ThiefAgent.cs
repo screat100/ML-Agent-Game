@@ -174,7 +174,7 @@ public class ThiefAgent : Agent
 
         //주변에 Chaser가 있을 때 감지
         SenseEnemy=false;
-        
+
 
         //주변 적들 감지
         Collider[] Enemys=Physics.OverlapSphere(transform.position,m_AreaSetting.runnerDetectRadius, m_chaserlayermask);
@@ -187,7 +187,10 @@ public class ThiefAgent : Agent
             SenseEnemy=true;
             /* 발걸음 감지된 적을 미니맵에 표시 */
             foreach(var Enemy in Enemys){
-                Enemy.GetComponent<PoliceAgent>().Detected=true;
+                if(GameManager.instance.playersTeam == Player.Team.thief)
+                { 
+                    Enemy.GetComponent<PoliceAgent>().Detected=true;
+                }
             }
 
             /* 주변에 위치한 적의 방향을 파악하고 도망갈 방향 지정 */

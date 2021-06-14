@@ -314,7 +314,15 @@ public class StageSetting : MonoBehaviour
     // * m_agent : ruby를 가진 agent인지 확인하기 위한 parameter
     public void ScoredThief(GameObject m_agent)
     {
-        bool flag = m_agent.GetComponent<ruby_runner>().hasruby;
+        bool flag;
+        if (m_agent.name=="Player")
+        {
+            flag= m_agent.GetComponent<Player>().hasruby;
+        }
+        else
+        {
+            flag= m_agent.GetComponent<ThiefAgent>().hasruby;
+        }
 
         if (flag)
         {

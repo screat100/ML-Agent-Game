@@ -21,9 +21,27 @@ public class PoliceAgent : Agent
     {
         if (collision.transform.tag == "thief")
         {
-            //collision.gameObject.SetActive(false);
-            GameObject.Find("Sounds").GetComponent<SoundManager>().PlayAudio("Catch", transform.position);
-            m_AreaSetting.GetReward_police();
+            if(collision.gameObject.name=="Player")
+            {
+                if (collision.gameObject.GetComponent<Player>().hasruby == true)
+                {
+                    m_AreaSetting.rubyTrigger.droptheRuby();
+                    m_AreaSetting.findruby = false;
+                }
+                GameObject.Find("Sounds").GetComponent<SoundManager>().PlayAudio("Catch", transform.position);
+                m_AreaSetting.GetReward_police();
+            }
+            else
+            {
+                if (collision.gameObject.GetComponent<ThiefAgent>().hasruby == true)
+                {
+                    m_AreaSetting.rubyTrigger.droptheRuby();
+                    m_AreaSetting.findruby = false;
+                }
+                collision.gameObject.SetActive(false);
+                GameObject.Find("Sounds").GetComponent<SoundManager>().PlayAudio("Catch", transform.position);
+                m_AreaSetting.GetReward_police();
+            }
         }
     }
 
