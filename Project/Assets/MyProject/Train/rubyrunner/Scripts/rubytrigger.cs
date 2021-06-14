@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class rubytrigger : MonoBehaviour
 {
-    public ruby_AreaSetting m_areaSetting;
+    public StageSetting m_areaSetting;
     // Start is called before the first frame update
     void Start()
     {
@@ -25,8 +25,8 @@ public class rubytrigger : MonoBehaviour
         {
             other.gameObject.GetComponent<ruby_runner>().hasruby=true;
             m_areaSetting.findruby=true;
-            for(int i=0;i<m_areaSetting.runnerList.Count;i++){
-                if(m_areaSetting.runnerList[i].rb==other.gameObject.GetComponent<Rigidbody>()){
+            for(int i=0;i<m_areaSetting.thiefAgents.Length;i++){
+                if(m_areaSetting.thiefAgents[i]==other.gameObject){
                     m_areaSetting.key_player=i;
                 }
             }

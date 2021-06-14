@@ -29,7 +29,7 @@ public class StageSetting : MonoBehaviour
     private SimpleMultiAgentGroup chaserGroup;
     private SimpleMultiAgentGroup runnerGroup;
 
-    public List<GameObject> Sectors;
+    public GameObject[] Sectors;
     public List<GameObject> Doorlist;
     public rubytrigger rubyTrigger;
 
@@ -69,7 +69,6 @@ public class StageSetting : MonoBehaviour
 
 
     /* ===      Base Functions     ===  */
-
     void Start()
     {
         GameManager.instance.phase = GameManager.Phase.waitLoading;
@@ -81,7 +80,8 @@ public class StageSetting : MonoBehaviour
         visitCoinList = GameObject.FindGameObjectsWithTag("areaDetector");
         coinNum = 0;
         catchedRunnerNum = 0;
-
+        /* ===      Sectors     ===*/
+        Sectors=GameObject.FindGameObjectsWithTag("spawn");
         /* ===      UI     ===  */
         text_watingTime.gameObject.SetActive(true);
         text_playingTime.gameObject.SetActive(false);
@@ -316,7 +316,6 @@ public class StageSetting : MonoBehaviour
     {
         bool flag = m_agent.GetComponent<ruby_runner>().hasruby;
 
-
         if (flag)
         {
             runnerGroup.AddGroupReward(0.5f);
@@ -336,7 +335,8 @@ public class StageSetting : MonoBehaviour
     // 스크립트에 삽입된 Sectors 중, 랜덤으로 ruby 위치 선정
     public void RandomPos_ruby()
     {
-        int Randomindex = Random.Range(0, Sectors.Count);
+        Debug.Log(Sectors.Length);
+        int Randomindex = Random.Range(0, Sectors.Length);
         rubyTrigger.resetPlace(Randomindex);
     }
 

@@ -45,6 +45,7 @@ TagManager:
   - police
   - thief
   - areaDetector
+  - spawn
   layers:
   - Default
   - TransparentFX
@@ -59,8 +60,8 @@ TagManager:
   - police_img
   - thief
   - wall
-  - 
-  - 
+  - player_img
+  - detected_img
   - 
   - 
   - 
