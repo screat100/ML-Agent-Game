@@ -187,7 +187,7 @@ public class ThiefAgent : Agent
         ClosestPoliceDist= m_Detectradius + 1f;
         if(Enemys.Length>0){
             SenseEnemy=true;
-            StartCoroutine(resetRadiusdist(5f));
+            m_Detectradius = 40f;
             /* 발걸음 감지된 적을 미니맵에 표시 */
             foreach(var Enemy in Enemys){
                 if(GameManager.instance.playersTeam == Player.Team.thief)
@@ -210,11 +210,15 @@ public class ThiefAgent : Agent
                 }
             }
         }
+        else
+        {
+            resetRadiusdist();
+        }
+        
     }
-    IEnumerator resetRadiusdist(float second)
+    void resetRadiusdist()
     {
-        yield return new WaitForSeconds(second);
-        SenseEnemy = false;
+        m_Detectradius = 20f;
     }
     public void ConfigureAgent()
     {
