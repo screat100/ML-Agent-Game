@@ -182,12 +182,12 @@ public class ThiefAgent : Agent
         Collider[] Enemys=Physics.OverlapSphere(transform.position, m_Detectradius, m_chaserlayermask);
         //도망 방향벡터
         RunVector= Vector3.zero;
-
+        SenseEnemy = false;
         //감지된 가장가까운 적과의 거리
         ClosestPoliceDist= m_Detectradius + 1f;
         if(Enemys.Length>0){
             SenseEnemy=true;
-            m_Detectradius = 40f;
+            m_Detectradius = 30f;
             /* 발걸음 감지된 적을 미니맵에 표시 */
             foreach(var Enemy in Enemys){
                 if(GameManager.instance.playersTeam == Player.Team.thief)

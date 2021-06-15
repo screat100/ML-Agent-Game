@@ -29,7 +29,11 @@ public class StageSetting : MonoBehaviour
     private SimpleMultiAgentGroup chaserGroup;
     private SimpleMultiAgentGroup runnerGroup;
 
-    public GameObject[] Sectors;
+    [System.NonSerialized]
+    public GameObject[] Ruby_Spawn;
+    [System.NonSerialized]
+    public GameObject[] Thief_Spawn;
+
     public List<GameObject> Doorlist;
     public rubytrigger rubyTrigger;
 
@@ -81,7 +85,8 @@ public class StageSetting : MonoBehaviour
         coinNum = 0;
         catchedRunnerNum = 0;
         /* ===      Sectors     ===*/
-        Sectors=GameObject.FindGameObjectsWithTag("spawn");
+        Ruby_Spawn=GameObject.FindGameObjectsWithTag("spawn");
+        Thief_Spawn = GameObject.FindGameObjectsWithTag("thiefSpawn");
         /* ===      UI     ===  */
         text_watingTime.gameObject.SetActive(true);
         text_playingTime.gameObject.SetActive(false);
@@ -180,6 +185,7 @@ public class StageSetting : MonoBehaviour
         gameObject.GetComponent<CapsuleCollider>().isTrigger = false;
 
         RandomPos_ruby();
+        RandomPos_thief();
     }
 
     private void Update() 
@@ -344,11 +350,18 @@ public class StageSetting : MonoBehaviour
     // 스크립트에 삽입된 Sectors 중, 랜덤으로 ruby 위치 선정
     public void RandomPos_ruby()
     {
-        Debug.Log(Sectors.Length);
-        int Randomindex = Random.Range(0, Sectors.Length);
+        int Randomindex = Random.Range(0, Ruby_Spawn.Length);
         rubyTrigger.resetPlace(Randomindex);
     }
 
+    public void RandomPos_thief()
+    {
+        foreach(var item in thiefAgents)
+        {
+            int Randomindex = Random.Range(0, Thief_Spawn.Length);
+            item.transform.position = Thief_Spawn[Randomindex].transform.position;
+        }
+    }
     // 스크립트에 삽입된 door들중, 랜덤으로 Goal로 활성화
     public void random_goal()
     {

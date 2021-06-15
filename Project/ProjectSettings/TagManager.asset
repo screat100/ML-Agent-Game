@@ -46,6 +46,7 @@ TagManager:
   - thief
   - areaDetector
   - spawn
+  - thiefSpawn
   layers:
   - Default
   - TransparentFX

@@ -43,7 +43,7 @@ public class rubytrigger : MonoBehaviour
     public void resetPlace(int spawnSector){
         gameObject.SetActive(true);
 
-        var spawnTransform = m_areaSetting.Sectors[spawnSector].transform;
+        var spawnTransform = m_areaSetting.Ruby_Spawn[spawnSector].transform;
         var xRange = spawnTransform.localScale.x / 2.1f;
         var zRange = spawnTransform.localScale.z / 2.1f;
 

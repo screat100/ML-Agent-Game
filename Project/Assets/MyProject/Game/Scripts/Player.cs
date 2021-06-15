@@ -28,6 +28,8 @@ public class Player : MonoBehaviour
     public GameObject lightOfPolice;
     public GameObject lightOfThief;
 
+    public StageSetting m_AreaSetting;
+    public LayerMask m_Goallayermask = 0;
     // related control
     public bool controllActivate;
     float AngleX;
@@ -111,9 +113,33 @@ public class Player : MonoBehaviour
         }
 
         PlayHeartBeatSound();
-        
+        if (GameManager.instance.playersTeam == Player.Team.thief)
+            GoalDetect();
     }
+    void GoalDetect()
+    {
+        //감지거리에 Goal 이 있을 때 다른 러너와 위치 공유
+        Collider[] Goals = Physics.OverlapSphere(transform.position, m_AreaSetting.runnerDetectRadius, m_Goallayermask);
 
+        if (Goals.Length > 0)
+        {
+            Vector3 dir = (Goals[0].transform.position - transform.position).normalized;
+            float t_angle = Vector3.Angle(dir, transform.forward);
+            float m_SightAngle = 90f * 2f;
+            //시야각에 잡히면
+            if (t_angle < m_SightAngle * 0.5f)
+            {
+                RaycastHit hit;
+                if (Physics.Raycast(transform.position + Vector3.up, dir, out hit))
+                {
+                    if (hit.collider.tag == "goal" && !m_AreaSetting.DetectGoal)
+                    {
+                        m_AreaSetting.DetectGoal = true;
+                    }
+                }
+            }
+        }
+    }
     private void OnCollisionEnter(Collision collision)
     {
         if (transform.tag == "thief" && collision.transform.tag == "police")
