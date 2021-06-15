@@ -134,6 +134,7 @@ public class Player : MonoBehaviour
 
         if(transform.tag == "police" && collision.transform.tag == "thief")
         {
+            GameManager.instance.policePlayerRecord++;
             collision.gameObject.SetActive(false);
             m_StageSetting.GetReward_police();
         }
