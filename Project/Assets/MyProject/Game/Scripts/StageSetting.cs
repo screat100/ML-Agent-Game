@@ -241,6 +241,7 @@ public class StageSetting : MonoBehaviour
             GameManager.instance.phase = GameManager.Phase.play;
             
             text_watingTime.gameObject.SetActive(false);
+            GameObject.Find("image_countdownBack").SetActive(false);
             text_playingTime.gameObject.SetActive(true);
 
             m_Player.ActivatePlayersControll();
