@@ -36,7 +36,7 @@ public class GameManager : MonoBehaviour
     public Phase phase;
 
     public int policeNum = 2;
-    public int thiefNum = 4;
+    public int thiefNum = 5;
 
     public int round = 0;
     public int winNum_Police = 0;

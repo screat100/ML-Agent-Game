@@ -15,6 +15,8 @@ public class ThiefAgent : Agent
     private StageSetting m_AreaSetting;
     private Rigidbody m_AgentRb;
 
+    AudioSource m_footstep;
+
     public NNModel DetectGoal;
     public NNModel DetectRuby;
     public NNModel RunModel;
@@ -60,6 +62,13 @@ public class ThiefAgent : Agent
         m_behaviorParameters = gameObject.GetComponent<BehaviorParameters>();
         runAngle=0f;
         m_Detectradius = m_AreaSetting.runnerDetectRadius;
+
+        GameObject instant_footstep = GameObject.Instantiate(GameObject.Find("Sounds").transform.Find("SFXs").transform.Find("Thief_footstep")).gameObject;
+        instant_footstep.transform.name = "Thief_footstep";
+        instant_footstep.transform.SetParent(transform);
+        instant_footstep.transform.localPosition = new Vector3(0, 0, 0);
+        m_footstep = gameObject.transform.Find("Thief_footstep").GetComponent<AudioSource>();
+
         if (m_behaviorParameters.TeamId == (int)Team.Chaser)
         {
             team = Team.Chaser;
@@ -128,10 +137,15 @@ public class ThiefAgent : Agent
         Detect();
 
          // animation
-        if (m_AgentRb.velocity.magnitude > 0.1f)
+        if (m_AgentRb.velocity.magnitude > 0.05f)
+        {
             gameObject.GetComponent<Animator>().SetBool("Run", true);
+        }
         else
+        {
             gameObject.GetComponent<Animator>().SetBool("Run", false);
+        }
+            
             
         if(m_AreaSetting.agentRunSpeed<m_AgentRb.velocity.z)
         {
@@ -282,7 +296,7 @@ public class ThiefAgent : Agent
         transform.Rotate(rotateDir, Time.fixedDeltaTime * 200f);
         if (!(m_AreaSetting.DetectGoal && hasruby))
         {
-            m_AgentRb.AddForce(dirToGo * m_AreaSetting.agentRunSpeed,
+            m_AgentRb.AddForce(dirToGo * m_AreaSetting.agentRunSpeed *1.3f,
             ForceMode.VelocityChange);
         }
     }
