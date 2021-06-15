@@ -43,6 +43,8 @@ public class Player : MonoBehaviour
 
     public LayerMask m_PoliceLayer;
 
+    [System.NonSerialized]
+    public bool hasruby;
     /*      ===         Functions         === */
 
     void Start()
@@ -50,7 +52,7 @@ public class Player : MonoBehaviour
         controllActivate = false;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
-        
+        hasruby = false;
         m_Animator = gameObject.GetComponent<Animator>();
         m_Rigidbody = gameObject.GetComponent<Rigidbody>();
         m_Camera = transform.Find("Main Camera").gameObject;
@@ -63,9 +65,11 @@ public class Player : MonoBehaviour
         {
             case Team.police:
                 team = Team.police;
+                gameObject.layer =7;
                 break;
             case Team.thief:
                 team = Team.thief;
+                gameObject.layer = 0;
                 break;
         }
 

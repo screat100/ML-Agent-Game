@@ -30,6 +30,9 @@ public class ThiefAgent : Agent
 
     BehaviorParameters m_behaviorParameters;
     private bool SenseEnemy;
+
+    [System.NonSerialized]
+    public bool Detected;
     public enum Team
     {
         Chaser = 0,
@@ -47,6 +50,7 @@ public class ThiefAgent : Agent
     Vector3 RunVector;
     //도망가야할 방향과 현재 내 각도의 차이
     float runAngle;
+    float ClosestPoliceDist;
     public override void Initialize()
     {
         m_AgentRb = GetComponent<Rigidbody>();
@@ -76,37 +80,39 @@ public class ThiefAgent : Agent
         }
 
     }
-
-    private void OnCollisionEnter(Collision collision)
+     private void FixedUpdate()
     {
-        if (collision.transform.tag == "police")
-        {
-            gameObject.SetActive(false);
-        }
-    }
+         ConfigureAgent();
 
-
-    private void FixedUpdate()
-    {
-        ConfigureAgent();
-        Vector3 current_velocity=transform.InverseTransformDirection(m_AgentRb.velocity);
-        
-        if (SenseEnemy){
-            runAngle=Vector3.Angle(transform.forward,RunVector);
-            m_AreaSetting.Reward_Get(-runAngle/m_AreaSetting.maxPlayTime*50);
+        if(Detected){
+            transform.Find("Minimap_thief").gameObject.layer=14;
+            //transform.Find("Minimap_thief").gameObject.layer=LayerMask.GetMask("detected_img");
+            Detected=false;
         }
         else{
-            m_AreaSetting.Reward_Get(+1f/m_AreaSetting.maxPlayTime*50);
+            transform.Find("Minimap_thief").gameObject.layer=9;
+            //transform.Find("Minimap_thief").gameObject.layer=LayerMask.GetMask("thief_img");
+        }
+
+        Vector3 current_velocity = transform.InverseTransformDirection(m_AgentRb.velocity);
+        if (m_AreaSetting.train == StageSetting.TrainBrain.RunBrain || m_AreaSetting.train == StageSetting.TrainBrain.TotalBrain)
+        {
+            runAngle = 0f;
+            if (SenseEnemy)
+            {
+                runAngle = Vector3.Angle(transform.forward, RunVector);
+                m_AreaSetting.Reward_Get(-1 / (m_AreaSetting.maxPlayTime*50)*10f);
+            }
         }
         
 
 
         
         if(current_velocity.z > m_AreaSetting.agentRunSpeed*0.75f){
-            m_AreaSetting.Reward_Get(+1f/m_AreaSetting.maxPlayTime*50);
+            m_AreaSetting.Reward_Get(+1f/(m_AreaSetting.maxPlayTime*50*(float)m_AreaSetting.thiefAgents.Length));
         }
-        else if(current_velocity.z < 0.0f){
-            m_AreaSetting.Reward_Get(-1f/m_AreaSetting.maxPlayTime*50);
+        else{
+            m_AreaSetting.Reward_Get(-1f/(m_AreaSetting.maxPlayTime*50*(float)m_AreaSetting.thiefAgents.Length));
         }
 
         if(m_AreaSetting.DetectGoal&&hasruby){
@@ -148,7 +154,7 @@ public class ThiefAgent : Agent
     void Detect()
     {
         //감지거리에 Goal 이 있을 때 다른 러너와 위치 공유
-        Collider[] Goals=Physics.OverlapSphere(transform.position, m_AreaSetting.runnerDetectRadius, m_Goallayermask);
+        Collider[] Goals=Physics.OverlapSphere(transform.position,m_AreaSetting.runnerDetectRadius,m_Goallayermask);
 
         if(Goals.Length>0){
                 Vector3 dir=(Goals[0].transform.position-transform.position).normalized;
@@ -168,27 +174,39 @@ public class ThiefAgent : Agent
 
         //주변에 Chaser가 있을 때 감지
         SenseEnemy=false;
-        
+
 
         //주변 적들 감지
         Collider[] Enemys=Physics.OverlapSphere(transform.position,m_AreaSetting.runnerDetectRadius, m_chaserlayermask);
         //도망 방향벡터
         RunVector= Vector3.zero;
+
+        //감지된 가장가까운 적과의 거리
+        ClosestPoliceDist=m_AreaSetting.runnerDetectRadius+1f;
         if(Enemys.Length>0){
             SenseEnemy=true;
+            /* 발걸음 감지된 적을 미니맵에 표시 */
+            foreach(var Enemy in Enemys){
+                if(GameManager.instance.playersTeam == Player.Team.thief)
+                { 
+                    Enemy.GetComponent<PoliceAgent>().Detected=true;
+                }
+            }
+
+            /* 주변에 위치한 적의 방향을 파악하고 도망갈 방향 지정 */
             foreach(var item in Enemys){
                 RunVector+=transform.localPosition-item.transform.localPosition;
             }
             RunVector=RunVector.normalized;
-            // RaycastHit hit;
-            // Vector3 dir=Enemys[0].transform.position-transform.position;
-            // if(Physics.Raycast(transform.position+Vector3.up, dir, out hit)){
-            //     if(hit.collider.tag=="chaser"){
-            //         SenseEnemy=true;
-            //     }
-            // }
-        }
 
+            /* 가장 가까운 적과의 거리 */
+            foreach(var item in Enemys){
+                float dist=Vector3.Distance(transform.position,item.transform.position);
+                if(ClosestPoliceDist>dist){
+                    ClosestPoliceDist=dist;
+                }
+            }
+        }
     }
 
     public void ConfigureAgent()
@@ -276,14 +294,20 @@ public class ThiefAgent : Agent
             sensor.AddObservation(m_AreaSetting.DetectGoal);
         }
         else if(m_AreaSetting.train==StageSetting.TrainBrain.RunBrain){
+            Vector3 cur_velocity=transform.InverseTransformDirection(m_AgentRb.velocity);
             sensor.AddObservation(SenseEnemy);
-            sensor.AddObservation(transform.InverseTransformDirection(m_AgentRb.velocity));
+            sensor.AddObservation(cur_velocity.x);
+            sensor.AddObservation(cur_velocity.z);
+            sensor.AddObservation(ClosestPoliceDist);
             sensor.AddObservation(runAngle);
         }
         else if(m_AreaSetting.train==StageSetting.TrainBrain.TotalBrain){
             if(SenseEnemy){
+                Vector3 cur_velocity=transform.InverseTransformDirection(m_AgentRb.velocity);
                 sensor.AddObservation(SenseEnemy);
-                sensor.AddObservation(transform.InverseTransformDirection(m_AgentRb.velocity));
+                sensor.AddObservation(cur_velocity.x);
+                sensor.AddObservation(cur_velocity.z);
+                sensor.AddObservation(ClosestPoliceDist);
                 sensor.AddObservation(runAngle);
             }
             else if(m_AreaSetting.findruby){

@@ -26,10 +26,18 @@ public class ruby_goal : MonoBehaviour
     private void OnCollisionEnter(Collision other)
     {
 
-        if(other.gameObject.tag == "thief"&&m_areaSetting.findruby&&flagGoal&&other.gameObject.GetComponent<ruby_runner>().hasruby)
+        if(other.gameObject.tag == "thief"&&m_areaSetting.findruby)
         {
-            other.gameObject.SetActive(false);
-            m_areaSetting.ScoredThief(other.gameObject); 
+            if (other.gameObject.name == "Player")
+            {
+                if (other.gameObject.GetComponent<Player>().hasruby == true)
+                    m_areaSetting.ScoredThief(other.gameObject);
+            }
+            else if (other.gameObject.GetComponent<ThiefAgent>().hasruby == true)
+            {
+                other.gameObject.SetActive(false);
+                m_areaSetting.ScoredThief(other.gameObject);
+            }
         }
     }
     public void select_finishGoal()
