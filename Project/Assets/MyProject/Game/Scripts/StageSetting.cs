@@ -277,6 +277,8 @@ public class StageSetting : MonoBehaviour
 
     public void EndGame(bool isPoliceWinner)
     {
+        GameManager.instance.thiefPlayerRecord += timer;
+
         // police win
         if(isPoliceWinner)
         {

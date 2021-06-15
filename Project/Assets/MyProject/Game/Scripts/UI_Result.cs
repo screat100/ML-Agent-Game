@@ -57,9 +57,12 @@ public class UI_Result : MonoBehaviour
             }
             else
             {
-                int min = (int)GameManager.instance.thiefPlayerRecord / 60;
-                int sec = (int)GameManager.instance.thiefPlayerRecord - 60*min;
-                int milsec = (int)(GameManager.instance.thiefPlayerRecord - (float)((int)GameManager.instance.thiefPlayerRecord)*100);
+                float time = GameManager.instance.thiefPlayerRecord / 3f;
+
+                int min = ((int)time)/60;
+                int sec = ((int)time) - 60*min;
+                int milsec = (int)((time - (float)((int)time))*100);
+
                 GameObject.Find("text_record").GetComponent<Text>().text = "소요 시간 : " + min.ToString() + "분 " + sec.ToString() + "초 " + milsec.ToString();
             }
 
