@@ -19,6 +19,8 @@ public class ThiefAgent : Agent
     public NNModel DetectRuby;
     public NNModel RunModel;
 
+    private float m_Detectradius;
+
     string m_DetectGoalBehaviorName = "rubyrun_DetectGoal";
     string m_DetectRubyBehaviorName = "rubyrun_DetectRuby";
     string m_RunModelBehaviorName = "rubyrun_RunModel";
@@ -57,6 +59,7 @@ public class ThiefAgent : Agent
         m_navagent = GetComponent<NavMeshAgent>();
         m_behaviorParameters = gameObject.GetComponent<BehaviorParameters>();
         runAngle=0f;
+        m_Detectradius = m_AreaSetting.runnerDetectRadius;
         if (m_behaviorParameters.TeamId == (int)Team.Chaser)
         {
             team = Team.Chaser;
@@ -101,7 +104,7 @@ public class ThiefAgent : Agent
             if (SenseEnemy)
             {
                 runAngle = Vector3.Angle(transform.forward, RunVector);
-                m_AreaSetting.Reward_Get(-1 / (m_AreaSetting.maxPlayTime*50)*10f);
+                m_AreaSetting.Reward_Get(-1 / (m_AreaSetting.maxPlayTime*50)*runAngle);
             }
         }
         
@@ -172,19 +175,19 @@ public class ThiefAgent : Agent
                 }
         }
 
-        //주변에 Chaser가 있을 때 감지
-        SenseEnemy=false;
+        
 
 
         //주변 적들 감지
-        Collider[] Enemys=Physics.OverlapSphere(transform.position,m_AreaSetting.runnerDetectRadius, m_chaserlayermask);
+        Collider[] Enemys=Physics.OverlapSphere(transform.position, m_Detectradius, m_chaserlayermask);
         //도망 방향벡터
         RunVector= Vector3.zero;
 
         //감지된 가장가까운 적과의 거리
-        ClosestPoliceDist=m_AreaSetting.runnerDetectRadius+1f;
+        ClosestPoliceDist= m_Detectradius + 1f;
         if(Enemys.Length>0){
             SenseEnemy=true;
+            StartCoroutine(resetRadiusdist(5f));
             /* 발걸음 감지된 적을 미니맵에 표시 */
             foreach(var Enemy in Enemys){
                 if(GameManager.instance.playersTeam == Player.Team.thief)
@@ -208,7 +211,11 @@ public class ThiefAgent : Agent
             }
         }
     }
-
+    IEnumerator resetRadiusdist(float second)
+    {
+        yield return new WaitForSeconds(second);
+        SenseEnemy = false;
+    }
     public void ConfigureAgent()
     {
         if (m_AreaSetting.train == StageSetting.TrainBrain.DetectGoalBrain)
