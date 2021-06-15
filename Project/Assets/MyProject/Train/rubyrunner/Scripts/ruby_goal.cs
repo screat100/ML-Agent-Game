@@ -26,7 +26,7 @@ public class ruby_goal : MonoBehaviour
     private void OnCollisionEnter(Collision other)
     {
 
-        if(other.gameObject.tag == "thief"&&m_areaSetting.findruby)
+        if(other.gameObject.tag == "thief"&&m_areaSetting.findruby&&gameObject.layer==6)
         {
             if (other.gameObject.name == "Player")
             {
