@@ -112,18 +112,6 @@ public class UI_Result : MonoBehaviour
         SceneManager.LoadScene("Stage");
     }
 
-    public void Replay()
-    {
-        GameManager.instance.round = 0;
-        GameManager.instance.winNum_Thief = 0;
-        GameManager.instance.winNum_Police = 0;
-        GameManager.instance.policePlayerRecord = 0;
-        GameManager.instance.thiefPlayerRecord = 0;
-        GameManager.instance.phase = GameManager.Phase.selectTeam;
-
-        Destroy(soundManager.gameObject);
-        SceneManager.LoadScene("MainMenu");
-    }
 
     public void GoToMainMenu()
     {
