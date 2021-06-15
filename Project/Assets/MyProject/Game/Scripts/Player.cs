@@ -161,6 +161,7 @@ public class Player : MonoBehaviour
         if(transform.tag == "police" && collision.transform.tag == "thief")
         {
             GameManager.instance.policePlayerRecord++;
+            GameObject.Find("Sounds").GetComponent<SoundManager>().PlayAudio("Catch", transform.position);
             collision.gameObject.SetActive(false);
             m_StageSetting.GetReward_police();
         }
