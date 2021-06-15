@@ -11,7 +11,7 @@ public class UI_Ingame : MonoBehaviour
     Camera m_minimapCam;
 
     /* 미니맵 cullingMask 역할별 Layer설정*/
-    string[] thief_cullingLayer = new string[] { "player_img", "goal", "thief_img", "wall", "detected_img" };
+    string[] thief_cullingLayer = new string[] { "player_img", "goal", "thief_img","wall", "detected_img" };
     string[] police_cullingLayer = new string[] {"player_img","police_img", "wall","detected_img" };
 
     void Start()

@@ -7,6 +7,7 @@ public class ruby_goal : MonoBehaviour
     [SerializeField]
     StageSetting m_areaSetting;
 
+    public GameObject m_minimapImg;
     [System.NonSerialized]
     public bool flagGoal;// Goal 이 활성화가 됐는가?
     
@@ -22,6 +23,12 @@ public class ruby_goal : MonoBehaviour
         m_areaSetting=GameObject.Find("GameArea").GetComponent<StageSetting>();
          m_leftrender.material=OffMaterial;
          m_rightrender.material=OffMaterial;
+        m_minimapImg = transform.Find("Minimap_goal").gameObject;
+        m_minimapImg.SetActive(false);
+    }
+    public void isDetected()
+    {
+        m_minimapImg.SetActive(true);
     }
     private void OnCollisionEnter(Collision other)
     {

@@ -27,7 +27,10 @@ public class rubytrigger : MonoBehaviour
             if (other.gameObject.name == "Player")
                 other.gameObject.GetComponent<Player>().hasruby = true;
             else
+            {
                 other.gameObject.GetComponent<ThiefAgent>().hasruby = true;
+                other.gameObject.GetComponent<ThiefAgent>().m_minimapThief.SetActive(true);
+            }
 
             m_areaSetting.findruby=true;
             for(int i=0;i<m_areaSetting.thiefAgents.Length;i++){

@@ -50,6 +50,9 @@ public class ThiefAgent : Agent
     public LayerMask m_chaserlayermask=0;
     public LayerMask m_Goallayermask=0;
 
+    //루비먹었을시 미니맵 표시
+    [System.NonSerialized]
+    public GameObject m_minimapThief;
     //도망 방향벡터
     Vector3 RunVector;
     //도망가야할 방향과 현재 내 각도의 차이
@@ -62,6 +65,9 @@ public class ThiefAgent : Agent
         m_behaviorParameters = gameObject.GetComponent<BehaviorParameters>();
         runAngle=0f;
         m_Detectradius = m_AreaSetting.runnerDetectRadius;
+
+        m_minimapThief = transform.Find("Minimap_rubyThief").gameObject;
+        m_minimapThief.SetActive(false);
 
         GameObject instant_footstep = GameObject.Instantiate(GameObject.Find("Sounds").transform.Find("SFXs").transform.Find("Thief_footstep")).gameObject;
         instant_footstep.transform.name = "Thief_footstep";

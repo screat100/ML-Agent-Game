@@ -198,6 +198,10 @@ public class StageSetting : MonoBehaviour
             runnerGroup.AddGroupReward(1f);
             DetectGoal = true;
         }
+        if (DetectGoal)
+        {
+            Doorlist[goalIndex].GetComponent<ruby_goal>().isDetected();
+        }
 
     }
 
