@@ -10,6 +10,8 @@ public class UI_Ingame : MonoBehaviour
     /* 미니 맵 */
     Camera m_minimapCam;
 
+    StageSetting m_areaSetting;
+
     /* 미니맵 cullingMask 역할별 Layer설정*/
     string[] thief_cullingLayer = new string[] { "player_img", "goal", "thief_img","wall", "detected_img" };
     string[] police_cullingLayer = new string[] {"player_img","police_img", "wall","detected_img" };
@@ -20,6 +22,7 @@ public class UI_Ingame : MonoBehaviour
         texts = GameObject.Find("texts").GetComponentsInChildren<Text>();
         m_minimapCam = GameObject.Find("Minimap_Camera").GetComponent<Camera>();
 
+        m_areaSetting = GameObject.Find("GameArea").GetComponent<StageSetting>();
         // 팀에 따라 게임 목표 메시지를 다르게 표기
         Text goalText = FindTextObject("text_goalMessage");
         if(GameManager.instance.playersTeam == Player.Team.police)
@@ -43,6 +46,14 @@ public class UI_Ingame : MonoBehaviour
     {
         /*남은 도둑 수 변경*/
         FindTextObject("text_remainedThief").text = GameObject.Find("GameArea").GetComponent<StageSetting>().willCatchNum.ToString();
+        if (m_areaSetting.findruby)
+        {
+            FindTextObject("thief_message").text = "단계 : 탈출구를 찾아라!";
+        }
+        else
+        {
+            FindTextObject("thief_message").text = "단계 : 루비를 찾아라!";
+        }
     }
     Text FindTextObject(string name)
     {
